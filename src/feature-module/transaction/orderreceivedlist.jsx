@@ -58,8 +58,8 @@ const OrdersReceivedList = () => {
   const [seriesOpt, setSeriesOpt] = useState([]);
   const [partyOpt, setPartyOpt] = useState([]);
   const [selectedisFilterVal, setselectedisFilterVal] = useState({
-    series: "Choose Series",
-    party: "Choose Party",
+    series: 0,
+    party: 0,
     startDate: "",
     endDate: "",
   });
@@ -80,23 +80,27 @@ const OrdersReceivedList = () => {
   const handleFieldsClear = () => {
     // console.log("hello");
     setselectedisFilterVal({
-      series: "Choose Series",
-      party: "Choose Party",
+      series: 0,
+      party: 0,
       startDate: "",
       endDate: "",
     });
   };
 
   const handleSelectedSeries = (selectedOption) => {
-    if (!selectedOption || selectedOption === "Choose Series") return;
-    setselectedisFilterVal({ ...selectedisFilterVal, series: selectedOption });
+    if (!selectedOption || selectedOption.label === "") return;
+    setselectedisFilterVal({
+      ...selectedisFilterVal,
+      series: selectedOption.value,
+    });
   };
 
   const handleSelectedParty = (selectedOption) => {
-    setselectedisFilterVal((prev) => ({
-      ...prev,
-      party: selectedOption?.value || 0,
-    }));
+    if (!selectedOption || selectedOption.label === "") return;
+    setselectedisFilterVal({
+      ...selectedisFilterVal,
+      party: selectedOption.value,
+    });
   };
 
   const handleFormDateChange = (date, datestring) => {
@@ -282,6 +286,23 @@ const OrdersReceivedList = () => {
     setSelectedRecord(null);
   };
 
+  const ValidationApplied = (SelectedFilter) => {
+    if (
+      (SelectedFilter.startDate && SelectedFilter.endDate === "") ||
+      (SelectedFilter.startDate === "" && SelectedFilter.endDate)
+    ) {
+      throw new Error("Please select a valid Date Range");
+    } else if (
+      !SelectedFilter.series &&
+      !SelectedFilter.party &&
+      !SelectedFilter.startDate &&
+      !SelectedFilter.endDate
+    ) {
+      throw new Error("Please select a valid Filter Range");
+    } else {
+      return true;
+    }
+  };
   // const applyFilter = async () => {
   //   setLoading(true);
   //   getTableData(`${apiUrl}/GetOrderReceivedDetails`);
@@ -316,39 +337,32 @@ const OrdersReceivedList = () => {
   const applyFilter = async () => {
     try {
       setLoading(true);
-      if (
-        (selectedisFilterVal.startDate && selectedisFilterVal.endDate == "") ||
-        (selectedisFilterVal.startDate == "" && selectedisFilterVal.endDate)
-      ) {
-        throw new Error("Please select a valid Date Range");
-      } else if (
-        !selectedisFilterVal.series === "Choose Series" &&
-        !selectedisFilterVal.party === "Choose Party" &&
-        !selectedisFilterVal.startDate &&
-        !selectedisFilterVal.endDate
-      ) {
-        throw new Error("Please select a valid Filter Range");
-      }
-      const apiurl = `${apiUrl}/GetOrderReceivedDetails/${selectedisFilterVal.series}/${selectedisFilterVal.party}/${selectedisFilterVal.startDate}/${selectedisFilterVal.endDate}`;
-      console.log("apiurl", apiurl);
-      const res = await fetch(apiurl);
+      if (!ValidationApplied(selectedisFilterVal)) return;
+      const { series, party, startDate, endDate } = selectedisFilterVal;
+      console.log("selectedisFilterVal", selectedisFilterVal);
+      const apiUrl1 = `${apiUrl}/GetOrderReceivedDetails?Series=${encodeURIComponent(
+        series
+      )}&Party=${encodeURIComponent(party)}&StartDate=${encodeURIComponent(
+        startDate
+      )}&EndDate=${encodeURIComponent(endDate)}`;
+
+      console.log("apiUrl1", apiUrl1);
+      const res = await fetch(apiUrl1);
       const json = await res.json();
-      if (json.status === 1) {
-        const tableList = data.data.map((item) => ({
-          id: item.vchCode,
-          date: item.vchDate,
-          series: item.sName,
-          vchno: item.vchNo,
-          customer: item.accName,
-          matcenter: item.mcName,
-          totqty: item.totQty,
-          totaltqty: item.totAltQty,
-          totamt: item.totAmt,
-        }));
-        setTableData(tableList);
-      } else {
-        toast.error(json.msg);
-      }
+      console.log(json);
+      if (json.status == "0") throw new Error(json.msg);
+      const tableList = json.data.map((item) => ({
+        id: item.vchCode,
+        date: item.vchDate,
+        series: item.sName,
+        vchno: item.vchNo,
+        customer: item.accName,
+        matcenter: item.mcName,
+        totqty: item.totQty,
+        totaltqty: item.totAltQty,
+        totamt: item.totAmt,
+      }));
+      setTableData(tableList);
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -513,7 +527,7 @@ const OrdersReceivedList = () => {
                                 (selectedisFilterVal.series
                                   ? seriesOpt.find(
                                       (option) =>
-                                        option.label ===
+                                        option.value ===
                                         selectedisFilterVal.series
                                     )
                                   : "") || null
