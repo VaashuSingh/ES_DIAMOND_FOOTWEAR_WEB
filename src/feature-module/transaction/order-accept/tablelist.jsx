@@ -18,8 +18,8 @@ import moment from "moment/moment";
 import {
   PageTopHeaderLeft,
   TableDataSearch,
-  TableTopHead,
-  TableTopHeader,
+  TableRefresh,
+  TableHeadButton,
 } from "../../../core/reusable_components/table/TableHead";
 import { all_routes } from "../../../Router/all_routes";
 
@@ -391,7 +391,7 @@ const OrdersReceivedList = () => {
               title={`Order Accept`}
               subTitle={`Order Accept Busy Voucher Details`}
             />
-            <TableTopHead onRefresh={handleRefresh} />
+            <TableRefresh onRefresh={handleRefresh} />
           </div>
           {/* /product list */}
           <div className="card table-list-card">

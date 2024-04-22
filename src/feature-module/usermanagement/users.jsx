@@ -11,9 +11,9 @@ import { toast } from "react-toastify";
 import Loader_2 from "../loader-2/loader-2";
 import No_Images from "../../core/assets/img/no-img.png";
 import {
-  AddTableTopButton,
+  TableHeadButton,
   TableDataSearch,
-  TableTopHead,
+  TableRefresh,
   PageTopHeaderLeft,
 } from "../../core/reusable_components/table/TableHead";
 
@@ -185,6 +185,11 @@ const Users = () => {
       setLoading(false);
     }
   };
+
+  // const handleRefresh = () => {
+  //   setRefresh((prev) => !prev);
+  // };
+
   //Searching Input Box In Table
   const onSearchHandler = (value) => {
     const filteredData = tableData.filter((o) =>
@@ -248,8 +253,8 @@ const Users = () => {
               title={`User List`}
               subTitle={`Manage Your Users`}
             />
-            <TableTopHead onRefresh={handleRefresh} />
-            <AddTableTopButton
+            <TableRefresh onRefresh={handleRefresh} />
+            <TableHeadButton
               title={`Add New User`}
               target={`add-units`}
               handleModalOpen={handleModalOpen}

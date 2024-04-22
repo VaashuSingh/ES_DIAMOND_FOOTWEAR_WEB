@@ -50,7 +50,7 @@ const PageTopHeaderRight = ({ path }) => {
   );
 };
 
-const AddTableTopButton = ({ title, target, handleModalOpen }) => {
+const TableHeadButton = ({ title, target, handleModalOpen }) => {
   return (
     <div className="page-btn">
       <Link
@@ -67,7 +67,7 @@ const AddTableTopButton = ({ title, target, handleModalOpen }) => {
   );
 };
 
-const TableTopHead = ({ onRefresh }) => {
+const TableRefresh = ({ onRefresh }) => {
   const dispatch = useDispatch();
   const toogleHeader = useSelector((state) => state.toggle_header);
 
@@ -169,8 +169,8 @@ const TableDataSearch = ({ onSearch }) => {
 export {
   PageTopHeaderLeft,
   PageTopHeaderRight,
-  AddTableTopButton,
-  TableTopHead,
+  TableHeadButton,
+  TableRefresh,
   TableDataSearch,
 }; // Exporting both functions together
 // because they are used in the same context.

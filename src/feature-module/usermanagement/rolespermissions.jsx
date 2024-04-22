@@ -9,8 +9,8 @@ import { apiUrl } from "../../core/json/api";
 import { toast } from "react-toastify";
 import Loader_2 from "../loader-2/loader-2";
 import {
-  TableTopHead,
-  AddTableTopButton,
+  TableRefresh,
+  TableHeadButton,
   TableDataSearch,
   PageTopHeaderLeft,
 } from "../../core/reusable_components/table/TableHead";
@@ -199,8 +199,8 @@ const RolesPermissions = () => {
               title={"Roles Permission"}
               subTitle={"Manage your roles"}
             />
-            <TableTopHead onRefresh={handleRefresh} />
-            <AddTableTopButton
+            <TableRefresh onRefresh={handleRefresh} />
+            <TableHeadButton
               title={"Add New Role"}
               target={"add-units"}
               handleModalOpen={handleModalOpen}
