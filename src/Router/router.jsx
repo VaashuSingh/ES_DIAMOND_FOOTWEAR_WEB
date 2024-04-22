@@ -10,6 +10,7 @@ import ThemeSettings from "../InitialPage/themeSettings";
 import Loader from "../feature-module/loader/loader";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { PrivateRoute } from "./privateRoute";
 // import HorizontalSidebar from "../InitialPage/Sidebar/horizontalSidebar";
 //import LoadingSpinner from "../InitialPage/Sidebar/LoadingSpinner";
 
@@ -19,7 +20,6 @@ const AllRoutes = () => {
   const HeaderLayout = () => (
     <div className={`main-wrapper ${data ? "header-collapse" : ""}`}>
       <Header />
-
       <Sidebar />
       <Outlet />
       <ThemeSettings />
@@ -54,13 +54,21 @@ const AllRoutes = () => {
             <Route path={route.path} element={route.element} key={id} />
           ))}
         </Route>
-        <Route path={"/"} element={<HeaderLayout />}>
+
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <HeaderLayout />
+            </PrivateRoute>
+          }
+        >
           {publicRoutes.map((route, id) => (
             <Route path={route.path} element={route.element} key={id} />
           ))}
         </Route>
 
-        <Route path={"/"} element={<Authpages />}>
+        <Route path="/" element={<Authpages />}>
           {pagesRoute.map((route, id) => (
             <Route path={route.path} element={route.element} key={id} />
           ))}

@@ -3,11 +3,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import ImageWithBasePath from "../../img/imagewithbasebath";
-import { ChevronUp, PlusCircle, RotateCcw } from "react-feather";
+import { ArrowLeft, ChevronUp, PlusCircle, RotateCcw } from "react-feather";
 import { useDispatch, useSelector } from "react-redux";
 import { setToogleHeader } from "../../redux/action";
+import Input from "antd/es/input/Input";
 
-const TableTopHeader = ({ title, subTitle }) => {
+const PageTopHeaderLeft = ({ title, subTitle }) => {
   return (
     <div className="add-item d-flex">
       <div className="page-title">
@@ -15,6 +16,37 @@ const TableTopHeader = ({ title, subTitle }) => {
         <h6>{subTitle}</h6>
       </div>
     </div>
+  );
+};
+
+const PageTopHeaderRight = ({ path }) => {
+  return (
+    <ul className="table-top-head">
+      <li>
+        <div className="page-btn">
+          <Link to={path} className="btn btn-secondary">
+            <ArrowLeft className="me-2" />
+            Back to Product
+          </Link>
+        </div>
+      </li>
+      <li>
+        {/* <OverlayTrigger placement="top" overlay={renderCollapseTooltip}>
+          <Link
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            title="Collapse"
+            id="collapse-header"
+            className={data ? "active" : ""}
+            onClick={() => {
+              dispatch(setToogleHeader(!data));
+            }}
+          >
+            <ChevronUp className="feather-chevron-up" />
+          </Link>
+        </OverlayTrigger> */}
+      </li>
+    </ul>
   );
 };
 
@@ -120,5 +152,25 @@ const TableTopHead = ({ onRefresh }) => {
   );
 };
 
-export { TableTopHeader, AddTableTopButton, TableTopHead }; // Exporting both functions together
+const TableDataSearch = ({ onSearch }) => {
+  return (
+    <div className="search-input">
+      <Input.Search
+        className="form-control-sm formsearch search-icon search-input-head px-0"
+        placeholder="Search ..."
+        allowClear
+        enterButton
+        onSearch={onSearch}
+      />
+    </div>
+  );
+};
+
+export {
+  PageTopHeaderLeft,
+  PageTopHeaderRight,
+  AddTableTopButton,
+  TableTopHead,
+  TableDataSearch,
+}; // Exporting both functions together
 // because they are used in the same context.

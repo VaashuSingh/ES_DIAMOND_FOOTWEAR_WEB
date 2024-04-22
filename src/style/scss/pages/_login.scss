@@ -8,19 +8,19 @@
     display: -ms-flexbox;
     display: flex;
     &.bg-img {
-        background-image: url(../../../../public/assets/img/authentication/login-img.jpg);
+        background-image: url(../../../../public/assets/img/authentication/mountain.jpg);
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center;
         .login-content {
-            background: rgba(255, 255, 255, 0.80);
+            // background: rgba(255, 255, 255, 0.80);
             backdrop-filter: blur(17px);
         }
         &.register-wrap {
             background-image: url(../../../../public/assets/img/authentication/register-img.jpg);
         }
         &.forgot-pass-wrap {
-            background-image: url(../../../../public/assets/img/authentication/forgot-password-img.jpg);
+            background-image: url(../../../../public/assets/img/authentication/mountain.jpg);
         }
         &.reset-pass-wrap {
             background-image: url(../../../../public/assets/img/authentication/reset-password-img.jpg);
@@ -30,7 +30,7 @@
         }
     }
     .login-content {
-        width: 50%;
+        width: 35%;
         height: 100vh;
         @include margin-padding(null, 24px);
         overflow: auto;
@@ -535,8 +535,8 @@
                         img {
                             border-radius: 100px;
                             border: 2px solid var(--Stroke, rgba(145, 158, 171, 0.30));
-                            // background: url(), lightgray 50% / cover no-repeat;
-                            background: lightgray 50% / cover no-repeat;
+                            background: url("../../../core/assets/img/mountain.jpg"), lightgray 50% / cover no-repeat;
+                            // background: lightgray 50% / cover no-repeat;
                         }
                         p {
                             font-size: $font-size-14;

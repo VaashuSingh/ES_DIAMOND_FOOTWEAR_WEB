@@ -1,6 +1,8 @@
 export const all_routes = {
-  dashboard: "/",
-  orderreceivedlist: "/order-received-list",
+  dashboard: "/dashboard",
+  ordacceptlist: "/order-accept-list",
+  ordaccept: "/order-accept",
+  ordacceptitemsdetviews: "/order-accept-items-details",
 
   productlist: "/product-list",
   addproduct: "/add-product",

@@ -6,7 +6,7 @@ import Loader_2 from "../../../feature-module/loader-2/loader-2";
 
 const AddRole = ({ mode, record, onSubmitSuccess }) => {
   const [input, setInput] = useState({ id: 0, name: "" });
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Fetch data if the component is mounted and there's a record passed down
   useEffect(() => {
@@ -27,8 +27,8 @@ const AddRole = ({ mode, record, onSubmitSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     try {
+      setIsLoading(true);
       const response = await fetch(`${apiUrl}/SaveUserRoleMaster`, {
         method: "POST",
         headers: {
@@ -47,7 +47,7 @@ const AddRole = ({ mode, record, onSubmitSuccess }) => {
     } catch (err) {
       toast.error(err.message);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -59,7 +59,7 @@ const AddRole = ({ mode, record, onSubmitSuccess }) => {
           <div className="modal-content">
             <div className="page-wrapper-new p-0">
               <div className="content">
-                {loading && <Loader_2 />}
+                {isLoading && <Loader_2 />}
                 <div className="modal-header border-0 custom-modal-header">
                   <div className="page-title">
                     <h4>{mode === "add" ? "Create Role" : "Edit Role"}</h4>
@@ -94,7 +94,11 @@ const AddRole = ({ mode, record, onSubmitSuccess }) => {
                       >
                         Cancel
                       </button>
-                      <button type="submit" className="btn btn-submit">
+                      <button
+                        type="submit"
+                        disabled={isLoading}
+                        className="btn btn-submit"
+                      >
                         {mode === "add" ? "Create Role" : "Update Role"}
                       </button>
                     </div>

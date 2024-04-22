@@ -1,66 +1,31 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
-import { setToogleHeader } from "../../core/redux/action";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Filter,
-  PlusCircle,
-  Sliders,
-  StopCircle,
-  User,
-  Zap,
-} from "react-feather";
-import Select from "react-select";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import Table from "../../core/pagination/datatable";
 import AddUsers from "../../core/modals/usermanagement/addusers";
 import { apiUrl } from "../../core/json/api";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import Loader_2 from "../loader-2/loader-2";
 import No_Images from "../../core/assets/img/no-img.png";
 import {
   AddTableTopButton,
+  TableDataSearch,
   TableTopHead,
-  TableTopHeader,
+  PageTopHeaderLeft,
 } from "../../core/reusable_components/table/TableHead";
 
 const Users = () => {
-  const oldandlatestvalue = [
-    { value: "date", label: "Sort by Date" },
-    { value: "newest", label: "Newest" },
-    { value: "oldest", label: "Oldest" },
-  ];
-  const users = [
-    { value: "Choose Name", label: "Choose Name" },
-    { value: "Lilly", label: "Lilly" },
-    { value: "Benjamin", label: "Benjamin" },
-  ];
-  const status = [
-    { value: "Choose Name", label: "Choose Status" },
-    { value: "Active", label: "Active" },
-    { value: "InActive", label: "InActive" },
-  ];
-  const role = [
-    { value: "Choose Role", label: "Choose Role" },
-    { value: "AcStore Keeper", label: "Store Keeper" },
-    { value: "Salesman", label: "Salesman" },
-  ];
-
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState("add"); // add or edit mode
   const [tableData, setTableData] = useState([]);
-  const dispatch = useDispatch();
   const data = useSelector((state) => state.toggle_header);
   // const dataSource = useSelector((state) => state.userlist_data);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-
-  console.log("data4444", data);
-  console.log("setToogleHeader", setToogleHeader(!data));
+  const [searchTable, setSearchTable] = useState(null);
 
   const toggleFilterVisibility = () => {
     setIsFilterVisible((prevVisibility) => !prevVisibility);
@@ -144,7 +109,7 @@ const Users = () => {
             <Link
               className="confirm-text p-2"
               to="#"
-              onClick={showConfirmationAlert}
+              onClick={() => showConfirmationAlert(record)}
             >
               <i data-feather="trash-2" className="feather-trash-2" />
             </Link>
@@ -197,9 +162,42 @@ const Users = () => {
     setSelectedRecord(null);
   };
 
+  const deleteRecord = async (userId) => {
+    try {
+      setLoading(true);
+      let url = `${apiUrl}/DeleteMasters/${2}/${1}/${userId}`;
+      const resp = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "content-type": "Application/json",
+        },
+      });
+      const json = await resp.json();
+      // console.log("json", json);
+      if (!json.status) throw new Error(json.msg);
+      else {
+        handleRefresh();
+      }
+      return json;
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  //Searching Input Box In Table
+  const onSearchHandler = (value) => {
+    const filteredData = tableData.filter((o) =>
+      Object.keys(o).some((k) =>
+        String(o[k]).toLowerCase().includes(value.toLowerCase())
+      )
+    );
+    setSearchTable(filteredData);
+  };
+
   const MySwal = withReactContent(Swal);
 
-  const showConfirmationAlert = () => {
+  const showConfirmationAlert = (record) => {
     MySwal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -208,36 +206,52 @@ const Users = () => {
       confirmButtonText: "Yes, delete it!",
       cancelButtonColor: "#ff0000",
       cancelButtonText: "Cancel",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        MySwal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          className: "btn btn-success",
-          confirmButtonText: "OK",
-          customClass: {
-            confirmButton: "btn btn-success",
-          },
-        });
+        const deleted = await deleteRecord(record.id);
+        console.log("deleted", deleted);
+        if (deleted.status == 1) {
+          MySwal.fire({
+            title: "Deleted!",
+            text: "Your file has been deleted.",
+            className: "btn btn-success",
+            confirmButtonText: "OK",
+            customClass: {
+              confirmButton: "btn btn-success",
+            },
+          });
+        } else {
+          MySwal.fire({
+            title: "Deleted!",
+            icon: "error",
+            text: deleted.msg,
+            className: "btn btn-success",
+            confirmButtonText: "OK",
+            customClass: {
+              confirmButton: "btn btn-success",
+            },
+          });
+        }
       } else {
         MySwal.close();
       }
     });
   };
+
   return (
     <div>
       {loading && <Loader_2 />}
       <div className="page-wrapper">
         <div className="content">
           <div className="page-header">
-            <TableTopHeader
-              title={"User List"}
-              subTitle={"Manage Your Users"}
+            <PageTopHeaderLeft
+              title={`User List`}
+              subTitle={`Manage Your Users`}
             />
             <TableTopHead onRefresh={handleRefresh} />
             <AddTableTopButton
-              title={"Add New User"}
-              target={"add-units"}
+              title={`Add New User`}
+              target={`add-units`}
               handleModalOpen={handleModalOpen}
             />
           </div>
@@ -246,16 +260,7 @@ const Users = () => {
             <div className="card-body">
               <div className="table-top">
                 <div className="search-set">
-                  <div className="search-input">
-                    <input
-                      type="text"
-                      placeholder="Search"
-                      className="form-control form-control-sm formsearch"
-                    />
-                    <Link to className="btn btn-searchset">
-                      <i data-feather="search" className="feather-search" />
-                    </Link>
-                  </div>
+                  <TableDataSearch onSearch={onSearchHandler} />
                 </div>
               </div>
               {/* /Filter */}
@@ -264,7 +269,7 @@ const Users = () => {
                 id="filter_inputs"
                 style={{ display: isFilterVisible ? "block" : "none" }}
               >
-                <div className="card-body pb-0">
+                {/* <div className="card-body pb-0">
                   <div className="row">
                     <div className="col-lg-3 col-sm-6 col-12">
                       <div className="input-blocks">
@@ -311,13 +316,13 @@ const Users = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
               {/* /Filter */}
               <div className="table-responsive">
                 <Table
                   columns={columns}
-                  dataSource={tableData}
+                  dataSource={searchTable || tableData}
                   rowKey={(record) => record.id}
                 />
               </div>

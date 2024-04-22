@@ -31,7 +31,7 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [showConfirmPassword, setConfirmPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (mode === "add") {
@@ -46,7 +46,7 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
 
   const getformData = async (url) => {
     try {
-      setLoading(true);
+      setIsLoading(true);
       const resp = await fetch(url);
       const json = await resp.json();
       const result = json.data;
@@ -74,13 +74,13 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
     } catch (err) {
       toast.error(err.message);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   const GetOnRoleMaster = async (url) => {
-    setLoading(true);
     try {
+      setIsLoading(true);
       const resp = await fetch(url);
       const { data } = await resp.json();
       const lidtdata = data.map((item) => ({
@@ -91,7 +91,7 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
     } catch (err) {
       toast.error(err.message);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -152,7 +152,7 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setIsLoading(true);
     try {
       if (!handleValidatePassword()) return;
       const ValidData = { ...formData, pwd: passwordinput.password };
@@ -174,7 +174,7 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
     } catch (err) {
       toast.error(err.message);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -203,12 +203,6 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
     setConfirmPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  const notify = (msg) => {
-    toast(msg, {
-      position: "top-center",
-    });
-  };
-
   return (
     <div>
       {/* Add User */}
@@ -217,7 +211,7 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
           <div className="modal-content">
             <div className="page-wrapper-new p-0">
               <div className="content">
-                {loading && <Loader_2 />}
+                {isLoading && <Loader_2 />}
                 <div className="modal-header border-0 custom-modal-header">
                   <div className="page-title">
                     <h4>{mode === "add" ? "Add User" : "Edit User"}</h4>
@@ -248,7 +242,7 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
                                 ) : (
                                   <>
                                     <img
-                                      src={formData.base64}
+                                      src={formData?.base64}
                                       alt="Profile Photo"
                                     />
                                     <Link to="#">
@@ -336,7 +330,7 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
                       </div>
                       <div className="col-lg-6">
                         <div className="input-blocks">
-                          <label>User Name</label>
+                          <label>Name</label>
                           <input
                             type="text"
                             name="username"

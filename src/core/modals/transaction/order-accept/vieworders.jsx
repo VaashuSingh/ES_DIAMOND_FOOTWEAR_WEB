@@ -1,14 +1,13 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from "react";
-import Loader_2 from "../../../feature-module/loader-2/loader-2";
+import Loader_2 from "../../../../feature-module/loader-2/loader-2";
 import { Link } from "react-router-dom";
 // import Table from "../../../core/pagination/datatable";
 import { useEffect } from "react";
-import { apiUrl } from "../../json/api";
+import { apiUrl } from "../../../json/api";
 import { toast } from "react-toastify";
-
-import { Table } from "antd";
-import { Badge, Tag } from "antd";
+import { Table, Badge, Tag } from "antd";
+import AcceptOrders from "./acceptorders";
 
 const OrderReceivedView = ({ record }) => {
   const [loading, setLoading] = useState(false);
@@ -20,8 +19,7 @@ const OrderReceivedView = ({ record }) => {
       title: "Item Name",
       dataIndex: "itemname",
       key: "itemname",
-      fixed: "left",
-      ellipsis: "true",
+      // fixed: "left",
       width: 300,
       sorter: (a, b) => a.itemname.length - b.itemname.length,
       render: (text) => (
@@ -35,16 +33,16 @@ const OrderReceivedView = ({ record }) => {
     },
 
     {
-      title: "Para1",
+      title: "Color",
       dataIndex: "para1",
       key: "1",
       sorter: true,
     },
     {
-      title: "Para2",
+      title: "Size",
       dataIndex: "para2",
       key: "2",
-      sorter: (a, b) => a.para1.length - b.para1.length,
+      sorter: true,
     },
     {
       title: "Qty.",
@@ -91,7 +89,7 @@ const OrderReceivedView = ({ record }) => {
     {
       title: "Status",
       dataIndex: "status",
-      fixed: "right",
+      // fixed: "right",
       width: 100,
       render: (tag, record) => (
         // console.log(record),
@@ -104,6 +102,24 @@ const OrderReceivedView = ({ record }) => {
             )}
           </Tag>
         </span>
+      ),
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      render: (text, record) => (
+        <td className="action-table-data">
+          <div className="edit-delete-action">
+            <Link
+              className="me-2 p-2"
+              to="#"
+              data-bs-toggle="modal"
+              data-bs-target="#OrdAcceptDetailsEdit"
+            >
+              <i data-feather="edit" className="feather-edit" />
+            </Link>
+          </div>
+        </td>
       ),
     },
   ];
@@ -152,7 +168,7 @@ const OrderReceivedView = ({ record }) => {
         tabIndex="-1"
         role="dialog"
       >
-        <div className="modal-dialog modal-dialog-centered modal-xl custom-modal-two">
+        <div className="modal-dialog modal-dialog-centered modal-fullscreen custom-modal-two">
           <div className="modal-content">
             <div className="page-wrapper-new p-0">
               <div className="content">
@@ -160,8 +176,8 @@ const OrderReceivedView = ({ record }) => {
                 <div className="modal-header custom-modal-header">
                   <div className="page-header mb-0">
                     <div className="page-title">
-                      <h4>Order Received</h4>
-                      <h6>View Your Orders Received Items Details</h6>
+                      <h4>Order Accept Items Details</h4>
+                      {/* <h6>View Your Orders Received Items Details</h6> */}
                     </div>
                   </div>
                   <button
@@ -178,50 +194,54 @@ const OrderReceivedView = ({ record }) => {
                 <div className="card table-list-card">
                   <div className="card-body">
                     <div className="table-top">
-                      <div className="col-lg-3 col-sm-6 col-12 ms-auto">
-                        <div className="input-blocks">
+                      <div className="col-lg-3 col-sm-6 col-12 ms-auto px-2">
+                        <div className="form-group input-blocks">
                           <label htmlFor="">Series</label>
                           <input
                             type="text"
                             className="form-control"
                             value={record?.series || "N/A"}
-                            aria-label="readonly input example"
+                            // aria-label="readonly input example"
+                            disabled
                             readOnly
                           />
                         </div>
                       </div>
-                      <div className="col-lg-3 col-sm-6 col-12 ms-auto">
+                      <div className="col-lg-3 col-sm-6 col-12 ms-auto px-2">
                         <div className="input-blocks">
                           <label htmlFor="">Vch No.</label>
                           <input
                             type="text"
                             className="form-control"
                             value={record?.vchno || "N/A"}
-                            aria-label="readonly input example"
+                            // aria-label="readonly input example"
+                            disabled
                             readOnly
                           />
                         </div>
                       </div>
-                      <div className="col-lg-3 col-sm-6 col-12 ms-auto">
+                      <div className="col-lg-3 col-sm-6 col-12 ms-auto px-2">
                         <div className="input-blocks">
                           <label htmlFor="">Vch Date: &nbsp;</label>
                           <input
                             type="text"
                             className="form-control"
                             value={record?.date || "N/A"}
-                            aria-label="readonly input example"
+                            // aria-label="readonly input example"
+                            disabled
                             readOnly
                           />
                         </div>
                       </div>
-                      <div className="col-lg-3 col-sm-6 col-12 ms-auto">
+                      <div className="col-lg-3 col-sm-6 col-12 ms-auto px-2">
                         <div className="input-blocks">
                           <label htmlFor="">Party</label>
                           <input
                             type="text"
                             className="form-control"
                             value={record?.customer || "N/A"}
-                            aria-label="readonly input example"
+                            // aria-label="readonly input example"
+                            disabled
                             readOnly
                           />
                         </div>
@@ -242,6 +262,7 @@ const OrderReceivedView = ({ record }) => {
           </div>
         </div>
       </div>
+      <AcceptOrders />
     </div>
   );
 };

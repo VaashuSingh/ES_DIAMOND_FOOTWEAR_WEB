@@ -8,8 +8,14 @@ import { all_routes } from "../../Router/all_routes";
 
 const Header = () => {
   const route = all_routes;
-
   const [toggle, SetToggle] = useState(false);
+  const userdata = JSON.parse(sessionStorage.getItem("users"));
+
+  const handleLogOut = () => {
+    // sessionStorage.removeItem("token");
+    sessionStorage.clear();
+    // window.location.reload();
+  };
 
   const isElementVisible = (element) => {
     return element.offsetWidth > 0 || element.offsetHeight > 0;
@@ -307,7 +313,7 @@ const Header = () => {
           {/* /Search */}
 
           {/* Select Store */}
-          <li className="nav-item dropdown has-arrow main-drop select-store-dropdown">
+          {/* <li className="nav-item dropdown has-arrow main-drop select-store-dropdown">
             <Link
               to="#"
               className="dropdown-toggle nav-link select-store"
@@ -360,7 +366,7 @@ const Header = () => {
                 Grocery Eden
               </Link>
             </div>
-          </li>
+          </li> */}
           {/* /Select Store */}
 
           {/* Flag */}
@@ -373,13 +379,9 @@ const Header = () => {
             >
               {/* <i data-feather="globe" /> */}
               {/* <FeatherIcon icon="globe" /> */}
-              <ImageWithBasePath
-                src="assets/img/flags/us.png"
-                alt="img"
-                height={16}
-              />
+              <img src="assets/img/flags/in.png" alt="img" height={16} />
             </Link>
-            <div className="dropdown-menu dropdown-menu-right">
+            {/* <div className="dropdown-menu dropdown-menu-right">
               <Link to="#" className="dropdown-item active">
                 <ImageWithBasePath
                   src="assets/img/flags/us.png"
@@ -412,7 +414,7 @@ const Header = () => {
                 />{" "}
                 German
               </Link>
-            </div>
+            </div> */}
           </li>
           {/* /Flag */}
           <li className="nav-item nav-item-box">
@@ -426,21 +428,21 @@ const Header = () => {
               <FeatherIcon icon="maximize" />
             </Link>
           </li>
-          <li className="nav-item nav-item-box">
+          {/* Email */}
+          {/* <li className="nav-item nav-item-box">
             <Link to="/email">
-              {/* <i data-feather="mail" /> */}
               <FeatherIcon icon="mail" />
               <span className="badge rounded-pill">1</span>
             </Link>
-          </li>
+          </li> */}
+          {/* Email */}
           {/* Notifications */}
-          <li className="nav-item dropdown nav-item-box">
+          {/* <li className="nav-item dropdown nav-item-box">
             <Link
               to="#"
               className="dropdown-toggle nav-link"
               data-bs-toggle="dropdown"
             >
-              {/* <i data-feather="bell" /> */}
               <FeatherIcon icon="bell" />
               <span className="badge rounded-pill">2</span>
             </Link>
@@ -593,7 +595,7 @@ const Header = () => {
                 <Link to="/activities">View all Notifications</Link>
               </div>
             </div>
-          </li>
+          </li> */}
           {/* /Notifications */}
           <li className="nav-item nav-item-box">
             <Link to="/general-settings">
@@ -609,21 +611,22 @@ const Header = () => {
             >
               <span className="user-info">
                 <span className="user-letter">
-                  <ImageWithBasePath
-                    src="assets/img/profiles/avator1.jpg"
-                    alt="img"
+                  <img
+                    src={userdata?.images}
+                    alt="user-image"
+                    title={`${userdata?.name}`}
                     className="img-fluid"
                   />
                 </span>
                 <span className="user-detail">
-                  <span className="user-name">John Smilga</span>
+                  <span className="user-name">{userdata?.name}</span>
                   <span className="user-role">Super Admin</span>
                 </span>
               </span>
             </Link>
             <div className="dropdown-menu menu-drop-user">
               <div className="profilename">
-                <div className="profileset">
+                {/* <div className="profileset">
                   <span className="user-img">
                     <ImageWithBasePath
                       src="assets/img/profiles/avator1.jpg"
@@ -632,10 +635,10 @@ const Header = () => {
                     <span className="status online" />
                   </span>
                   <div className="profilesets">
-                    <h6>John Smilga</h6>
+                    <h6>{userdata?.name}</h6>
                     <h5>Super Admin</h5>
                   </div>
-                </div>
+                </div> */}
                 <hr className="m-0" />
                 <Link className="dropdown-item" to={route.profile}>
                   <i className="me-2" data-feather="user" /> My Profile
@@ -645,7 +648,11 @@ const Header = () => {
                   Settings
                 </Link>
                 <hr className="m-0" />
-                <Link className="dropdown-item logout pb-0" to="/signin">
+                <Link
+                  className="dropdown-item logout pb-0"
+                  to="/signin"
+                  onClick={handleLogOut}
+                >
                   <ImageWithBasePath
                     src="assets/img/icons/log-out.svg"
                     alt="img"

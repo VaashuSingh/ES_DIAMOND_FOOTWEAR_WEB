@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from "react";
-import { apiUrl } from "../../json/api";
+import { apiUrl } from "../../../json/api";
 import { toast } from "react-toastify";
-import Loader_2 from "../../../feature-module/loader-2/loader-2";
+import Loader_2 from "../../../../feature-module/loader-2/loader-2";
 
 const OrderReceivedApproval = ({ record, onSubmitSuccess }) => {
   const [remarks, setRemarks] = useState("");

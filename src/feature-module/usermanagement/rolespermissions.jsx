@@ -9,9 +9,10 @@ import { apiUrl } from "../../core/json/api";
 import { toast } from "react-toastify";
 import Loader_2 from "../loader-2/loader-2";
 import {
-  TableTopHeader,
   TableTopHead,
   AddTableTopButton,
+  TableDataSearch,
+  PageTopHeaderLeft,
 } from "../../core/reusable_components/table/TableHead";
 
 const RolesPermissions = () => {
@@ -21,6 +22,7 @@ const RolesPermissions = () => {
   const [tabledata, setTableData] = useState([]);
   const [mode, setMode] = useState("add");
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const [searchTable, setSearchTable] = useState(null);
 
   const columns = [
     {
@@ -77,17 +79,15 @@ const RolesPermissions = () => {
     setLoading(true);
     try {
       const resp = await fetch(url);
-      const { data } = await resp.json();
-      if (data.length > 0) {
-        const formattedData = data.map((item) => ({
-          id: item.roleId,
-          rolename: item.name,
-          createdon: item.createdOn,
-        }));
-        setTableData(formattedData);
-      } else {
-        toast.error("No Data Found!");
-      }
+      const json = await resp.json();
+      // console.log("json", json);
+      if (!json.status) throw new Error(json.msg);
+      const formattedData = json.data.map((item) => ({
+        id: item.roleId,
+        rolename: item.name,
+        createdon: item.createdOn,
+      }));
+      setTableData(formattedData);
     } catch (err) {
       toast.error(String(err));
     } finally {
@@ -116,7 +116,8 @@ const RolesPermissions = () => {
         },
       });
       const json = await resp.json();
-      if (json.data.status === 1) handleRefresh();
+      // console.log("json", json);
+      if (json.status === 1) handleRefresh();
       return json;
     } catch (err) {
       toast.error(String(err.message));
@@ -177,9 +178,14 @@ const RolesPermissions = () => {
     setIsFilterVisible((prevVisibility) => !prevVisibility);
   };
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+  //Searching Input Box In Table
+  const onSearchHandler = (value) => {
+    const filteredData = tabledata.filter((o) =>
+      Object.keys(o).some((k) =>
+        String(o[k]).toLowerCase().includes(value.toLowerCase())
+      )
+    );
+    setSearchTable(filteredData);
   };
 
   return (
@@ -189,7 +195,7 @@ const RolesPermissions = () => {
         <div className="content">
           <div className="page-header">
             {/* Table top header component */}
-            <TableTopHeader
+            <PageTopHeaderLeft
               title={"Roles Permission"}
               subTitle={"Manage your roles"}
             />
@@ -204,24 +210,13 @@ const RolesPermissions = () => {
           <div className="card table-list-card">
             <div className="card-body">
               <div className="table-top">
-                <div className="search-set">
-                  <div className="search-input">
-                    <input
-                      type="text"
-                      placeholder="Search"
-                      className="form-control form-control-sm formsearch"
-                    />
-                    <Link to className="btn btn-searchset">
-                      <i data-feather="search" className="feather-search" />
-                    </Link>
-                  </div>
-                </div>
+                <TableDataSearch onSearch={onSearchHandler} />
               </div>
               {/* /Filter */}
               <div className="table-responsive">
                 <Table
                   columns={columns}
-                  dataSource={tabledata}
+                  dataSource={searchTable || tabledata}
                   rowKey={(record) => record.id}
                 />
               </div>

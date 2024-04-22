@@ -193,11 +193,13 @@ import TaxRates from "../feature-module/settings/financialsettings/taxrates";
 import CurrencySettings from "../feature-module/settings/financialsettings/currencysettings";
 import WareHouses from "../core/modals/peoples/warehouses";
 import Coupons from "../feature-module/coupons/coupons";
-import OrdersReceivedList from "../feature-module/transaction/orderreceivedlist";
-import { all_routes } from "./all_routes";
 
-console.log("routes", routes);
-console.log("routes.wwww", routes.orderreceivedlist);
+//Transaction
+import AcceptList from "../feature-module/transaction/order-accept/tablelist";
+import ItemsDeatilsViews from "../feature-module/transaction/order-accept/orderviews";
+
+import { all_routes } from "./all_routes";
+import { element } from "prop-types";
 
 export const publicRoutes = [
   {
@@ -1400,12 +1402,20 @@ export const publicRoutes = [
   },
   {
     id: 117,
-    path: routes.orderreceivedlist,
-    name: "orderreceivedlist",
-    element: <OrdersReceivedList />,
+    path: routes.ordacceptlist,
+    name: "ordacceptlist",
+    element: <AcceptList />,
+    route: Route,
+  },
+  {
+    id: 118,
+    path: routes.ordacceptitemsdetviews,
+    name: "ordacceptitemsdetviews",
+    element: <ItemsDeatilsViews />,
     route: Route,
   },
 ];
+
 export const posRoutes = [
   {
     id: 1,

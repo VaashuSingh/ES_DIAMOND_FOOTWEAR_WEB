@@ -1,24 +1,27 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import ImageWithBasePath from "../../core/img/imagewithbasebath";
+import { Link, Route, useNavigate } from "react-router-dom";
+import ImageWithBasePath from "../../../core/img/imagewithbasebath";
 import { Filter, StopCircle, User } from "react-feather";
 import Select from "react-select";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import Table from "../../core/pagination/datatable";
-import OrdApproval from "../../core/modals/transaction/orderreceivedapproval";
-import { apiUrl } from "../../core/json/api";
+import Table from "../../../core/pagination/datatable";
+import OrdApproval from "../../../core/modals/transaction/order-accept/approvalorders";
+import { apiUrl } from "../../../core/json/api";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Loader_2 from "../loader-2/loader-2";
+import Loader_2 from "../../loader-2/loader-2";
 import { DatePicker } from "antd";
-import OrderReceivedView from "../../core/modals/transaction/orderreceivedview";
+import OrderReceivedView from "../../../core/modals/transaction/order-accept/vieworders";
 import moment from "moment/moment";
 import {
+  PageTopHeaderLeft,
+  TableDataSearch,
   TableTopHead,
   TableTopHeader,
-} from "../../core/reusable_components/table/TableHead";
+} from "../../../core/reusable_components/table/TableHead";
+import { all_routes } from "../../../Router/all_routes";
 
 const OrdersReceivedList = () => {
   const [loading, setLoading] = useState(false);
@@ -29,12 +32,15 @@ const OrdersReceivedList = () => {
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [seriesOpt, setSeriesOpt] = useState([]);
   const [partyOpt, setPartyOpt] = useState([]);
+  const [searchTable, setSearchTable] = useState(null);
   const [selectedisFilterVal, setselectedisFilterVal] = useState({
     series: 0,
     party: 0,
     startDate: "",
     endDate: "",
   });
+
+  const routes = all_routes;
 
   const toggleFilterVisibility = () => {
     setIsFilterVisible((prevVisibility) => !prevVisibility);
@@ -136,17 +142,18 @@ const OrdersReceivedList = () => {
           <div className="edit-delete-action">
             <Link
               className="me-2 p-2"
-              to="#"
-              data-bs-toggle="modal"
-              data-bs-target="#ordreceivedDetails"
-              onClick={() => OnRowHandleClick(record)}
+              to={routes.ordacceptitemsdetviews}
+              state={{ code: record?.id }}
+              // onClick={() =>
+              //   handleRowClick(record.id, routes.ordacceptitemsdetviews)
+              // }
             >
               <i
                 data-feather="eye"
                 className="feather feather-eye action-eye"
               />
             </Link>
-            <Link
+            {/* <Link
               className="me-2 p-2"
               to="#"
               data-bs-toggle="modal"
@@ -157,7 +164,7 @@ const OrdersReceivedList = () => {
                 data-feather="sheild"
                 className="feather feather-shield shield"
               />
-            </Link>
+            </Link> */}
           </div>
         </td>
       ),
@@ -174,7 +181,7 @@ const OrdersReceivedList = () => {
       const resp = await fetch(url);
       const json = await resp.json();
       const data = json.data;
-      // console.log("data", json);
+      console.log("data", json);
       if (json.status === 1) {
         const tableList = data.map((item) => ({
           id: item.vchCode,
@@ -187,16 +194,9 @@ const OrdersReceivedList = () => {
           totaltqty: item.totAltQty,
           totamt: item.totAmt,
         }));
+
         setTableData(tableList);
-        // Extract unique party options and sort alphabetically
-        const uniqueParty = Array.from(new Set(data.map((opt) => opt.accCode)))
-          .map((value) => data.find((opt) => opt.accCode === value))
-          .map((opt) => ({
-            value: opt.accCode,
-            label: opt.accName,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label)); // Sort alphabetically
-        setPartyOpt(uniqueParty);
+        // Add "All" option to the beginning of the options array
 
         const uniqueSeries = Array.from(new Set(data.map((opt) => opt.sCode)))
           .map((value) => data.find((opt) => opt.sCode === value))
@@ -205,9 +205,28 @@ const OrdersReceivedList = () => {
             label: opt.sName,
           }))
           .sort((a, b) => a.label.localeCompare(b.label)); // Sort alphabetically
-        setSeriesOpt(uniqueSeries);
+
+        const optionsWithAll1 = [
+          { value: "0", label: "Select All" },
+          ...uniqueSeries,
+        ];
+        setSeriesOpt(optionsWithAll1);
+
+        // Extract unique party options and sort alphabetically
+        const uniqueParty = Array.from(new Set(data.map((opt) => opt.accCode)))
+          .map((value) => data.find((opt) => opt.accCode === value))
+          .map((opt) => ({
+            value: opt.accCode,
+            label: opt.accName,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label)); // Sort alphabetically
+        const optionsWithAll2 = [
+          { value: "0", label: "Select All" },
+          ...uniqueParty,
+        ];
+        setPartyOpt(optionsWithAll2);
       } else {
-        toast.error(data.msg);
+        toast.error(() => data.msg);
       }
     } catch (err) {
       toast.error(err.message);
@@ -280,7 +299,7 @@ const OrdersReceivedList = () => {
       setLoading(true);
       if (!ValidationApplied(selectedisFilterVal)) return;
       const { series, party, startDate, endDate } = selectedisFilterVal;
-      console.log("selectedisFilterVal", selectedisFilterVal);
+      // console.log("selectedisFilterVal", selectedisFilterVal);
       const apiUrl1 = `${apiUrl}/GetOrderReceivedDetails?Series=${encodeURIComponent(
         series
       )}&Party=${encodeURIComponent(party)}&StartDate=${encodeURIComponent(
@@ -340,6 +359,27 @@ const OrdersReceivedList = () => {
     getTableData(`${apiUrl}/GetOrderReceivedDetails`);
   };
 
+  //Searching Input Box In Table
+  const handleSearch = (value) => {
+    const filteredData = tableData.filter((o) =>
+      Object.keys(o).some((k) =>
+        String(o[k]).toLowerCase().includes(value.toLowerCase())
+      )
+    );
+    setSearchTable(filteredData);
+  };
+
+  // const navigate = useNavigate();
+
+  // const handleRowClick = (rowId, path) => {
+  //   // Navigate to the second form and pass row ID and path as state
+  //   console.log("row clicked", rowId);
+  //   console.log("row path", path);
+
+  //   navigate("/order-accept-items-details", { state: { rowId, path } });
+  //   // navigate("/second-form", { state: { rowId, path } });
+  // };
+
   return (
     <div>
       {loading && <Loader_2 />}
@@ -347,9 +387,9 @@ const OrdersReceivedList = () => {
         <div className="content">
           <div className="page-header">
             {/* Table top header component */}
-            <TableTopHeader
-              title={"Order Received"}
-              subTitle={"Order Received Details"}
+            <PageTopHeaderLeft
+              title={`Order Accept`}
+              subTitle={`Order Accept Busy Voucher Details`}
             />
             <TableTopHead onRefresh={handleRefresh} />
           </div>
@@ -358,17 +398,9 @@ const OrdersReceivedList = () => {
             <div className="card-body">
               <div className="table-top">
                 <div className="search-set">
-                  <div className="search-input">
-                    <input
-                      type="text"
-                      placeholder="Search"
-                      className="form-control form-control-sm formsearch"
-                    />
-                    <Link to className="btn btn-searchset">
-                      <i data-feather="search" className="feather-search" />
-                    </Link>
-                  </div>
+                  <TableDataSearch onSearch={handleSearch} />
                 </div>
+                {/* /Filter Icon*/}
                 <div className="search-path">
                   <Link
                     className={`btn btn-filter ${
@@ -388,6 +420,7 @@ const OrdersReceivedList = () => {
                     </span>
                   </Link>
                 </div>
+                {/* /Filter Icon*/}
               </div>
               {/* /Filter */}
               <div
@@ -497,13 +530,13 @@ const OrdersReceivedList = () => {
               <div className="table-responsive">
                 <Table
                   columns={columns}
-                  dataSource={tableData}
+                  dataSource={searchTable || tableData}
                   rowKey={(record) => record.id}
                 />
               </div>
             </div>
           </div>
-          {/* /product list */}
+          {/* /Order Received list */}
         </div>
       </div>
       <OrderReceivedView record={selectedRecord} />
