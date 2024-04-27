@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Loader_2 from "../../loader-2/loader-2";
 import {
+  GoBackToPage,
   PageTopHeaderLeft,
   TableTopHead,
   TableTopHeader,
@@ -11,26 +12,35 @@ import { Table, Tag } from "antd";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { apiUrl } from "../../../core/json/api";
 import { toast } from "react-toastify";
-import Accept_Modal from "../../../core/modals/transaction/order-accept/accept-modal";
+import Modal_Accept from "../../../core/modals/transaction/order-accept/accept-modal";
 import Datatable from "../../../core/pagination/datatable";
 
-const ItemsDeatilsViews = () => {
+const ItemsDeatilsShow = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [tableData, setTableDatas] = useState([]);
-  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [selectedRowData, setSelectedRowData] = useState({ data: "" });
+  const [selecteditems, setSelecteditems] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+  // const [rowDetails, setRowDetails] = useState({
+  //   series: "",
+  //   vchno: "",
+  //   vchDate: "",
+  //   party: "",
+  // });
   // const [recordId, setRecordId] = useState(null);
   const [modalData, setModalData] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
   const recordId = state?.code;
+
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     total: 0,
   });
+
   const handleTableChange = (pagination, filters, sorter) => {
     setPagination(pagination);
   };
@@ -112,39 +122,16 @@ const ItemsDeatilsViews = () => {
       title: "Status",
       dataIndex: "status",
       render: (_, record, index) => {
-        // console.log("ggg", record.key);
         const rowData = modalData[record?.key];
         const status = rowData ? "Complete" : "Pending";
         const color = rowData ? "success" : "error";
         return <Tag color={color}>{status}</Tag>;
       },
-
-      // fixed: "right",
-      //   width: 100,
-      // render: (tag, record, index) => (
-      //   <span className="d-flex justify-content-between align-items-center">
-      //     <Tag
-      //       color={
-      //         isAction.action === 1 && isAction.index === index
-      //           ? "blue"
-      //           : "volcano"
-      //       }
-      //       key={tag}
-      //     >
-      //       {isAction.action === 1 && isAction.index === index ? (
-      //         <Badge status="success" text="Complete" />
-      //       ) : (
-      //         <Badge status="error" text="Pending" />
-      //       )}
-      //     </Tag>
-      //   </span>
-      // ),
     },
     {
       title: "Action",
       dataIndex: "action",
       render: (_, record, index) => (
-        // console.log("index", record?.key),
         <td id="accept_table" className="action-table-data">
           <div className="edit-delete-action">
             <a
@@ -199,13 +186,19 @@ const ItemsDeatilsViews = () => {
     }
   }, [recordId]);
 
-  // console.log("tableData", tableData);
+  // console.log("modalData", modalData);
 
   const showModal = (record, index) => {
-    setSelectedRowData(record);
+    setSelecteditems(record);
     setSelectedRowIndex(index);
+    setSelectedRowData({ data: "" });
+    if (modalData[index]) {
+      setSelectedRowData({ data: modalData[index] });
+    }
     setIsModalVisible(true);
   };
+
+  console.log("selectedRowData", selectedRowData);
 
   const handleModalOk = () => {
     setIsModalVisible(false);
@@ -213,6 +206,7 @@ const ItemsDeatilsViews = () => {
 
   const handleModalCancel = () => {
     setIsModalVisible(false);
+    setSelectedRowData({ data: "" });
   };
 
   const handleSaveModalData = (rowData) => {
@@ -222,10 +216,6 @@ const ItemsDeatilsViews = () => {
     handleModalOk();
   };
 
-  console.log("modalData", modalData);
-  // console.log("selectedRowIndex", selectedRowIndex);
-  // console.log("selectedRowData", selectedRowData);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     // Check if any row has a status of "Pending"
@@ -233,7 +223,7 @@ const ItemsDeatilsViews = () => {
 
     console.log("hasPendingRows", hasPendingRows);
     if (hasPendingRows) {
-      toast.error("Please complete all rows before saving.");
+      toast.warning("Please complete all rows before saving.");
       return;
     }
   };
@@ -249,7 +239,55 @@ const ItemsDeatilsViews = () => {
               title={`Items Details`}
               subTitle={`Order Accept Busy Voucher Items Details`}
             />
+            <GoBackToPage title={"Order Accept"} />
             {/* <TableTopHead onRefresh={handleRefresh} /> */}
+          </div>
+          <div className="table-top form-control">
+            <div className="col-lg-3 col-sm-6 col-12 ms-auto px-2">
+              <div className="form-group input-blocks">
+                <label htmlFor="">Series</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={state?.headers?.series || "N/A"}
+                  disabled
+                />
+              </div>
+            </div>
+            <div className="col-lg-3 col-sm-6 col-12 ms-auto px-2">
+              <div className="input-blocks">
+                <label htmlFor="">Vch No.</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={state?.headers?.vchno || "N/A"}
+                  aria-label="readonly input example"
+                  disabled
+                />
+              </div>
+            </div>
+            <div className="col-lg-3 col-sm-6 col-12 ms-auto px-2">
+              <div className="input-blocks">
+                <label htmlFor="">Vch Date: &nbsp;</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={state?.headers?.vchdate || "N/A"}
+                  disabled
+                />
+              </div>
+            </div>
+            <div className="col-lg-3 col-sm-6 col-12 ms-auto px-2">
+              <div className="input-blocks">
+                <label htmlFor="">Party</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={state?.headers?.party || "N/A"}
+                  disabled
+                />
+              </div>
+            </div>
           </div>
           {/* /product list */}
           <form action="#" onSubmit={handleSubmit}>
@@ -261,9 +299,6 @@ const ItemsDeatilsViews = () => {
                     columns={columns}
                     dataSource={tableData}
                     rowKey={(record) => record.key}
-                    // pagination={pagination}
-                    // pagination={false} // Disable default pagination
-                    // onChange={handleTableChange}
                   />
                 </div>
               </div>
@@ -295,13 +330,15 @@ const ItemsDeatilsViews = () => {
         // action={handleAction}
         // rowIndex={selectRowIndex}
       /> */}
-      <Accept_Modal
+      <Modal_Accept
         show={isModalVisible}
         onHide={handleModalCancel}
         onSave={handleSaveModalData}
+        selectItems={selecteditems}
+        modalData={selectedRowData}
       />
     </div>
   );
 };
 
-export default ItemsDeatilsViews;
+export default ItemsDeatilsShow;

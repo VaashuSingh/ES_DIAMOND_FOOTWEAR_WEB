@@ -196,7 +196,7 @@ import Coupons from "../feature-module/coupons/coupons";
 
 //Transaction
 import AcceptList from "../feature-module/transaction/order-accept/tablelist";
-import ItemsDeatilsViews from "../feature-module/transaction/order-accept/orderviews";
+import ItemsDeatilsShow from "../feature-module/transaction/order-accept/itemsdetailsshow";
 
 import { all_routes } from "./all_routes";
 import { element } from "prop-types";
@@ -1411,7 +1411,7 @@ export const publicRoutes = [
     id: 118,
     path: routes.ordacceptitemsdetviews,
     name: "ordacceptitemsdetviews",
-    element: <ItemsDeatilsViews />,
+    element: <ItemsDeatilsShow />,
     route: Route,
   },
 ];

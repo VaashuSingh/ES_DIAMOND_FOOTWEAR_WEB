@@ -15,17 +15,17 @@ export const PrivateRoute = (props) => {
 
   // console.log("gdgdgd", `${location.pathname}${location.search}`);
 
-  useEffect(() => {
-    // console.log("Private pathname", location.pathname);
-    // console.log("Private search", location.search);
+  // useEffect(() => {
+  //   console.log("Private pathname", location.pathname);
+  //   console.log("Private search", location.search);
 
-    // if (!isLoggedIn && location.pathname !== "/signin") {
-    //   window.alert("You must log in first!");
-    //   return <Navigate replace={true} to="/signin" />;
-    // } else if (isLoggedIn && location.pathname === "/signin") {
-    //   return <Navigate replace={true} to="/signin" />;
-    // }
-  }, [location]);
+  //   if (!isLoggedIn && location.pathname !== "/signin") {
+  //     window.alert("You must log in first!");
+  //     return <Navigate replace={true} to="/signin" />;
+  //   } else if (isLoggedIn && location.pathname === "/signin") {
+  //     return <Navigate replace={true} to="/signin" />;
+  //   }
+  // }, [location]);
 
   // const isLoggedIn = localStorage.getItem("userData") !== null;
   // console.log("isLoggedIn", isLoggedIn);

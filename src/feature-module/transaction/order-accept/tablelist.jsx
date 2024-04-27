@@ -10,7 +10,6 @@ import Table from "../../../core/pagination/datatable";
 import OrdApproval from "../../../core/modals/transaction/order-accept/approvalorders";
 import { apiUrl } from "../../../core/json/api";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import Loader_2 from "../../loader-2/loader-2";
 import { DatePicker } from "antd";
 import OrderReceivedView from "../../../core/modals/transaction/order-accept/vieworders";
@@ -18,8 +17,9 @@ import moment from "moment/moment";
 import {
   PageTopHeaderLeft,
   TableDataSearch,
-  TableRefresh,
+  PageTopRight,
   TableHeadButton,
+  renderActions,
 } from "../../../core/reusable_components/table/TableHead";
 import { all_routes } from "../../../Router/all_routes";
 
@@ -39,7 +39,7 @@ const OrdersReceivedList = () => {
     startDate: "",
     endDate: "",
   });
-
+  const navigate = useNavigate();
   const routes = all_routes;
 
   const toggleFilterVisibility = () => {
@@ -137,23 +137,32 @@ const OrdersReceivedList = () => {
       title: "Actions",
       dataIndex: "actions",
       key: "actions",
+      // render: (_, record) => (tableData.length ? renderActions(record) : ""),
       render: (text, record) => (
-        <td className="action-table-data">
-          <div className="edit-delete-action">
-            <Link
-              className="me-2 p-2"
-              to={routes.ordacceptitemsdetviews}
-              state={{ code: record?.id }}
-              // onClick={() =>
-              //   handleRowClick(record.id, routes.ordacceptitemsdetviews)
-              // }
-            >
-              <i
-                data-feather="eye"
-                className="feather feather-eye action-eye"
-              />
-            </Link>
-            {/* <Link
+        console.log("record", record),
+        (
+          <td className="action-table-data">
+            <div className="edit-delete-action">
+              <a
+                className="me-2 p-2"
+                // to={routes.ordacceptitemsdetviews}
+                // state={{
+                //   code: record?.id,
+                //   headers: {
+                //     series: record.series,
+                //     vchdate: record.date,
+                //     vchno: record.vchno,
+                //     party: record.customer,
+                //   },
+                // }}
+                onClick={() => handleRowClick(record)}
+              >
+                <i
+                  data-feather="eye"
+                  className="feather feather-eye action-eye"
+                />
+              </a>
+              {/* <Link
               className="me-2 p-2"
               to="#"
               data-bs-toggle="modal"
@@ -165,11 +174,26 @@ const OrdersReceivedList = () => {
                 className="feather feather-shield shield"
               />
             </Link> */}
-          </div>
-        </td>
+            </div>
+          </td>
+        )
       ),
     },
   ];
+
+  const handleRowClick = (record) => {
+    navigate(routes.ordacceptitemsdetviews, {
+      state: {
+        code: record?.id,
+        headers: {
+          series: record.series,
+          vchdate: record.date,
+          vchno: record.vchno,
+          party: record.customer,
+        },
+      },
+    });
+  };
 
   useEffect(() => {
     getTableData(`${apiUrl}/GetOrderReceivedDetails`);
@@ -181,7 +205,7 @@ const OrdersReceivedList = () => {
       const resp = await fetch(url);
       const json = await resp.json();
       const data = json.data;
-      console.log("data", json);
+      // console.log("data", json);
       if (json.status === 1) {
         const tableList = data.map((item) => ({
           id: item.vchCode,
@@ -391,7 +415,7 @@ const OrdersReceivedList = () => {
               title={`Order Accept`}
               subTitle={`Order Accept Busy Voucher Details`}
             />
-            <TableRefresh onRefresh={handleRefresh} />
+            {/* <PageTopRight onRefresh={handleRefresh} /> */}
           </div>
           {/* /product list */}
           <div className="card table-list-card">

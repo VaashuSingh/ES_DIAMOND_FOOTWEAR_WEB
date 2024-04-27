@@ -5,6 +5,9 @@ import FeatherIcon from "feather-icons-react";
 import ImageWithBasePath from "../../core/img/imagewithbasebath";
 import { Search, XCircle } from "react-feather";
 import { all_routes } from "../../Router/all_routes";
+import logo2 from "./../../core/assets/img/logo2.png";
+import logo3 from "./../../core/assets/img/logo3.png";
+import logo4 from "./../../core/assets/img/logo4.png";
 
 const Header = () => {
   const route = all_routes;
@@ -172,13 +175,16 @@ const Header = () => {
           onMouseOver={expandMenuOpen}
         >
           <Link to="/dashboard" className="logo logo-normal">
-            <ImageWithBasePath src="assets/img/logo.png" alt="img" />
+            {/* <ImageWithBasePath src="assets/img/logo.png" alt="img" /> */}
+            <img src={logo2} alt="img" />
           </Link>
           <Link to="/dashboard" className="logo logo-white">
-            <ImageWithBasePath src="assets/img/logo-white.png" alt="img" />
+            {/* <img src="assets/img/logo-white.png" alt="img" /> */}
+            <img src={logo3} alt="img" />
           </Link>
           <Link to="/dashboard" className="logo-small">
-            <ImageWithBasePath src="assets/img/logo-small.png" alt="img" />
+            {/* <ImageWithBasePath src="assets/img/logo-small.png" alt="img" /> */}
+            <img src={logo4} alt="img" />
           </Link>
           <Link
             id="toggle_btn"
@@ -418,15 +424,13 @@ const Header = () => {
           </li>
           {/* /Flag */}
           <li className="nav-item nav-item-box">
-            <Link
-              to="#"
+            <a
               id="btnFullscreen"
               onClick={() => toggleFullscreen()}
               className={isFullscreen ? "Exit Fullscreen" : "Go Fullscreen"}
             >
-              {/* <i data-feather="maximize" /> */}
               <FeatherIcon icon="maximize" />
-            </Link>
+            </a>
           </li>
           {/* Email */}
           {/* <li className="nav-item nav-item-box">
@@ -604,8 +608,7 @@ const Header = () => {
             </Link>
           </li>
           <li className="nav-item dropdown has-arrow main-drop">
-            <Link
-              to="#"
+            <a
               className="dropdown-toggle nav-link userset"
               data-bs-toggle="dropdown"
             >
@@ -623,7 +626,7 @@ const Header = () => {
                   <span className="user-role">Super Admin</span>
                 </span>
               </span>
-            </Link>
+            </a>
             <div className="dropdown-menu menu-drop-user">
               <div className="profilename">
                 {/* <div className="profileset">

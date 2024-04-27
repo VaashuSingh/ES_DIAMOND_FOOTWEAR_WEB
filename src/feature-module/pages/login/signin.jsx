@@ -30,7 +30,7 @@ const Signin = () => {
         setLoading(true);
         let url = `${apiUrl}/ValidateUser`;
         const resp = await fetch(url, {
-          method: "PATCH",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },

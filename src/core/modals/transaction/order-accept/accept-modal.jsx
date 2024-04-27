@@ -1,11 +1,14 @@
 /* eslint-disable react/prop-types */
 import { DatePicker } from "antd";
-import moment from "moment";
-import { useState } from "react";
-import { Modal, Button } from "react-bootstrap";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+import { Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import { dateFormat } from "../../../json/api";
+dayjs.extend(customParseFormat);
 
-const Accept_Modal = ({ show, onHide, onSave }) => {
+const Modal_Accept = ({ show, onHide, onSave, selectItems, modalData }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState({
     mrp_date: null,
@@ -23,7 +26,33 @@ const Accept_Modal = ({ show, onHide, onSave }) => {
     deli_date: null,
   });
 
+  const labelMap = {
+    mrp_date: "MRP Date",
+    purc_date: "Purchase Date",
+    prod_date: "Production Date",
+    deli_date: "Delivery Date",
+  };
+
+  useEffect(() => {
+    setSelectedDates({
+      mrp_date: modalData?.data?.mrp_date,
+      purc_date: modalData?.data?.purc_date,
+      prod_date: modalData?.data?.prod_date,
+      deli_date: modalData?.data?.deli_date,
+    });
+
+    setInput({
+      mrp_date: modalData?.data?.mrp_date,
+      purc_date: modalData?.data?.purc_date,
+      prod_date: modalData?.data?.prod_date,
+      deli_date: modalData?.data?.deli_date,
+      remarks: modalData?.data?.remarks,
+      person: modalData?.data?.person,
+    });
+  }, [modalData]);
+
   const handleSelectedDateChange = (date, dateName, dateString) => {
+    // console.log("dateString", dateString);
     setSelectedDates((prevdate) => ({
       ...prevdate,
       [dateName]: date,
@@ -31,7 +60,7 @@ const Accept_Modal = ({ show, onHide, onSave }) => {
 
     setInput({
       ...input,
-      [dateName]: date ? moment(dateString).format("DD-MM-YYYY") : null, // Format the date if it's not null,
+      [dateName]: dateString || null, //date ? dayjs(date).format(dateFormat) : null, //date ? moment(dateString).format(dateFormat) : null, // Use moment(date) instead of moment(dateString)
     });
   };
 
@@ -97,165 +126,103 @@ const Accept_Modal = ({ show, onHide, onSave }) => {
   };
 
   return (
-    <>
-      <Modal
-        show={show}
-        onHide={onHide}
-        size="md"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header closeButton onClick={handleModalClose}>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Order Accept Approvel
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {/* {content} */}
-          <div key={document.id} className="tile">
-            <div className="custom-file-container">
-              <form onSubmit={handleSubmit}>
-                <div className="row">
-                  <div className="col-lg-6">
+    <Modal
+      show={show}
+      onHide={onHide}
+      size="md"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      style={{ zIndex: 1050 }}
+    >
+      <Modal.Header closeButton onClick={handleModalClose}>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Order Accept Approvel
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {/* {content} */}
+        <div>
+          <h6 className="d-flex bg-soft-dark justify-content-center align-items-center">
+            {`Item Name : ${selectItems?.itemname || "Not Found"}`}
+          </h6>
+        </div>
+        <hr />
+        <div key={document.id} className="tile">
+          <div className="custom-file-container">
+            <form onSubmit={handleSubmit}>
+              <div className="row">
+                {Object.entries(selectedDates).map(([dateName, date]) => (
+                  <div key={dateName} className="col-lg-6">
                     <div className="mb-3">
-                      <label className="form-label">MRP Date</label>
+                      <label className="form-label">{labelMap[dateName]}</label>
                       <div className="input-groupicon calender-input">
                         <DatePicker
-                          value={selectedDates.mrp_date}
-                          selected={selectedDates.mrp_date}
+                          value={date ? dayjs(date, dateFormat) : null}
+                          selected={date}
                           onChange={(date, dateString) =>
-                            handleSelectedDateChange(
-                              date,
-                              "mrp_date",
-                              dateString
-                            )
+                            handleSelectedDateChange(date, dateName, dateString)
                           }
-                          type="date"
                           className="form-control filterdatepicker"
+                          format={dateFormat}
                           placeholder="Date"
+                          style={{ zIndex: 2000 }}
                         />
                       </div>
                     </div>
                   </div>
+                ))}
+              </div>
 
-                  <div className="col-lg-6">
-                    <div className="mb-3">
-                      <label className="form-label">Purchase Date</label>
-                      <div className="input-groupicon calender-input">
-                        <DatePicker
-                          value={selectedDates.purc_date}
-                          selected={selectedDates.purc_date}
-                          onChange={(date, dateString) =>
-                            handleSelectedDateChange(
-                              date,
-                              "purc_date",
-                              dateString
-                            )
-                          }
-                          type="date"
-                          className="form-control filterdatepicker"
-                          placeholder="Date"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="col-lg-6">
-                    <div className="mb-3">
-                      <label className="form-label">Production Date</label>
-                      <div className="input-groupicon calender-input">
-                        <DatePicker
-                          value={selectedDates.prod_date}
-                          selected={selectedDates.prod_date}
-                          onChange={(date, dateString) =>
-                            handleSelectedDateChange(
-                              date,
-                              "prod_date",
-                              dateString
-                            )
-                          }
-                          type="date"
-                          className="form-control filterdatepicker"
-                          placeholder="Date"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="col-lg-6">
-                    <div className="mb-3">
-                      <label className="form-label">Delivery Date</label>
-                      <div className="input-groupicon calender-input">
-                        <DatePicker
-                          value={selectedDates.deli_date}
-                          selected={selectedDates.deli_date}
-                          onChange={(date, dateString) =>
-                            handleSelectedDateChange(
-                              date,
-                              "deli_date",
-                              dateString
-                            )
-                          }
-                          type="date"
-                          className="form-control filterdatepicker"
-                          placeholder="Date"
-                        />
-                      </div>
-                    </div>
-                  </div>
+              <div className="col-lg-12">
+                <div className="mb-3 input-blocks">
+                  <label className="form-label">Remarks</label>
+                  <textarea
+                    type="text"
+                    className="form-control"
+                    name="remarks"
+                    value={input.remarks}
+                    onChange={handleInputChange}
+                    placeholder="Type Message"
+                    required
+                  />
+                  <p className="red">Maximum 100 Characters</p>
                 </div>
-
-                <div className="col-lg-12">
-                  <div className="mb-3 input-blocks">
-                    <label className="form-label">Remarks</label>
-                    <textarea
-                      type="text"
-                      className="form-control"
-                      name="remarks"
-                      value={input.remarks}
-                      onChange={handleInputChange}
-                      placeholder="Type Message"
-                      required
-                    />
-                    <p className="red">Maximum 100 Characters</p>
-                  </div>
-                  <div className="mb-3">
-                    <label className="form-label">Responeble Person</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="person"
-                      value={input.person}
-                      onChange={handleInputChange}
-                      placeholder="Person Name"
-                      required
-                    />
-                  </div>
+                <div className="mb-3">
+                  <label className="form-label">Responeble Person</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="person"
+                    value={input.person}
+                    onChange={handleInputChange}
+                    placeholder="Person Name"
+                    required
+                  />
                 </div>
+              </div>
 
-                <div className="modal-footer-btn">
-                  <button
-                    type="button"
-                    className="btn btn-cancel me-2"
-                    onClick={handleModalClose}
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn btn-submit">
-                    Approved
-                  </button>
-                </div>
-              </form>
-            </div>
+              <div className="modal-footer-btn">
+                <button
+                  type="button"
+                  className="btn btn-cancel me-2"
+                  onClick={handleModalClose}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-submit">
+                  Approved
+                </button>
+              </div>
+            </form>
           </div>
-        </Modal.Body>
-        {/* <Modal.Footer>
+        </div>
+      </Modal.Body>
+      {/* <Modal.Footer>
           <Button onClick={onHide}>Save Documents</Button>
           <Button onClick={onHide}>Close</Button>
         </Modal.Footer> */}
-      </Modal>
-    </>
+    </Modal>
   );
 };
 
-export default Accept_Modal;
+export default Modal_Accept;

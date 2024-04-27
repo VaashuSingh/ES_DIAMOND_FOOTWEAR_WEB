@@ -15,6 +15,7 @@ import store from "./core/redux/store.jsx";
 import AllRoutes from "./Router/router.jsx";
 
 const rootElement = document.getElementById("root");
+console.log("rootElement", rootElement);
 
 if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);

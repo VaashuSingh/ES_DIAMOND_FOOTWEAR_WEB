@@ -9,7 +9,7 @@ import { apiUrl } from "../../core/json/api";
 import { toast } from "react-toastify";
 import Loader_2 from "../loader-2/loader-2";
 import {
-  TableRefresh,
+  PageTopRight,
   TableHeadButton,
   TableDataSearch,
   PageTopHeaderLeft,
@@ -109,14 +109,9 @@ const RolesPermissions = () => {
   const handleRowDelete = async (roleId) => {
     setLoading(true);
     try {
-      const resp = await fetch(`${apiUrl}/DeleteMasters/${1}/${1}/${roleId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "Application/json",
-        },
-      });
+      const resp = await fetch(`${apiUrl}/DeleteMasters/${1}/${1}/${roleId}`);
       const json = await resp.json();
-      // console.log("json", json);
+      console.log("json", json);
       if (json.status === 1) handleRefresh();
       return json;
     } catch (err) {
@@ -199,7 +194,7 @@ const RolesPermissions = () => {
               title={"Roles Permission"}
               subTitle={"Manage your roles"}
             />
-            <TableRefresh onRefresh={handleRefresh} />
+            {/* <PageTopRight onRefresh={handleRefresh} /> */}
             <TableHeadButton
               title={"Add New Role"}
               target={"add-units"}

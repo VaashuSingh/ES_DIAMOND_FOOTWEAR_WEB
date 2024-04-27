@@ -1,0 +1,7 @@
+input[type="text"][disabled] {
+    color: red;
+ }
+
+ :where(.css-dev-only-do-not-override-1b0bdye).ant-picker-dropdown {
+    z-index: 2000 !important;
+  }

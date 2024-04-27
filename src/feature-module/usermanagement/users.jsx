@@ -13,7 +13,7 @@ import No_Images from "../../core/assets/img/no-img.png";
 import {
   TableHeadButton,
   TableDataSearch,
-  TableRefresh,
+  PageTopRight,
   PageTopHeaderLeft,
 } from "../../core/reusable_components/table/TableHead";
 
@@ -165,16 +165,11 @@ const Users = () => {
   const deleteRecord = async (userId) => {
     try {
       setLoading(true);
-      let url = `${apiUrl}/DeleteMasters/${2}/${1}/${userId}`;
-      const resp = await fetch(url, {
-        method: "DELETE",
-        headers: {
-          "content-type": "Application/json",
-        },
-      });
+      let url = `${apiUrl}/DeleteMasters/2/1/${parseInt(userId)}`;
+      const resp = await fetch(url);
       const json = await resp.json();
-      // console.log("json", json);
-      if (!json.status) throw new Error(json.msg);
+      console.log("json", json);
+      if (!json?.status) throw new Error(json?.msg);
       else {
         handleRefresh();
       }
@@ -215,7 +210,7 @@ const Users = () => {
       if (result.isConfirmed) {
         const deleted = await deleteRecord(record.id);
         console.log("deleted", deleted);
-        if (deleted.status == 1) {
+        if (deleted?.status === 1) {
           MySwal.fire({
             title: "Deleted!",
             text: "Your file has been deleted.",
@@ -227,13 +222,13 @@ const Users = () => {
           });
         } else {
           MySwal.fire({
-            title: "Deleted!",
+            title: "Not Deleted!",
             icon: "error",
-            text: deleted.msg,
-            className: "btn btn-success",
+            text: deleted?.msg || "Error : Data Not Deleted",
+            className: "btn btn-error",
             confirmButtonText: "OK",
             customClass: {
-              confirmButton: "btn btn-success",
+              confirmButton: "btn btn-error",
             },
           });
         }
@@ -253,7 +248,7 @@ const Users = () => {
               title={`User List`}
               subTitle={`Manage Your Users`}
             />
-            <TableRefresh onRefresh={handleRefresh} />
+            {/* <PageTopRight onRefresh={handleRefresh} /> */}
             <TableHeadButton
               title={`Add New User`}
               target={`add-units`}

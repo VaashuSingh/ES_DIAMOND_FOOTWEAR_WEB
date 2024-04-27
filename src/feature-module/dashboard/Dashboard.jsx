@@ -124,9 +124,9 @@ const Dashboard = () => {
                 </div>
                 <div className="dash-widgetcontent">
                   <h5>
-                    <CountUp start={0} end={307144} duration={3} prefix="$" />
+                    <CountUp start={0} end={0} duration={3} prefix="$" />
                   </h5>
-                  <h6>Total Purchase Due</h6>
+                  <h6>Total Orders</h6>
                 </div>
               </div>
             </div>
@@ -145,11 +145,11 @@ const Dashboard = () => {
                     $
                     <CountUp
                       start={0}
-                      end={4385}
+                      end={0}
                       duration={3} // Duration in seconds
                     />
                   </h5>
-                  <h6>Total Sales Due</h6>
+                  <h6>Total Order To Accept</h6>
                 </div>
               </div>
             </div>
@@ -168,12 +168,12 @@ const Dashboard = () => {
                     $
                     <CountUp
                       start={0}
-                      end={385656.5}
+                      end={0}
                       duration={3} // Duration in seconds
                       decimals={1}
                     />
                   </h5>
-                  <h6>Total Sale Amount</h6>
+                  <h6>New Report</h6>
                 </div>
               </div>
             </div>
@@ -192,18 +192,18 @@ const Dashboard = () => {
                     $
                     <CountUp
                       start={0}
-                      end={40000}
+                      end={0}
                       duration={3} // Duration in seconds
                     />
                   </h5>
-                  <h6>Total Expense Amount</h6>
+                  <h6>Coming Soon...</h6>
                 </div>
               </div>
             </div>
             <div className="col-xl-3 col-sm-6 col-12 d-flex">
               <div className="dash-count">
                 <div className="dash-counts">
-                  <h4>100</h4>
+                  <h4>0</h4>
                   <h5>Customers</h5>
                 </div>
                 <div className="dash-imgs">
@@ -214,8 +214,8 @@ const Dashboard = () => {
             <div className="col-xl-3 col-sm-6 col-12 d-flex">
               <div className="dash-count das1">
                 <div className="dash-counts">
-                  <h4>110</h4>
-                  <h5>Suppliers</h5>
+                  <h4>0</h4>
+                  <h5>Coming Soon...</h5>
                 </div>
                 <div className="dash-imgs">
                   <UserCheck />
@@ -225,8 +225,8 @@ const Dashboard = () => {
             <div className="col-xl-3 col-sm-6 col-12 d-flex">
               <div className="dash-count das2">
                 <div className="dash-counts">
-                  <h4>150</h4>
-                  <h5>Purchase Invoice</h5>
+                  <h4>0</h4>
+                  <h5>Coming Soon...</h5>
                 </div>
                 <div className="dash-imgs">
                   <ImageWithBasePath
@@ -240,8 +240,8 @@ const Dashboard = () => {
             <div className="col-xl-3 col-sm-6 col-12 d-flex">
               <div className="dash-count das3">
                 <div className="dash-counts">
-                  <h4>170</h4>
-                  <h5>Sales Invoice</h5>
+                  <h4>0</h4>
+                  <h5>Coming Soon...</h5>
                 </div>
                 <div className="dash-imgs">
                   <File />
@@ -251,7 +251,7 @@ const Dashboard = () => {
           </div>
           {/* Button trigger modal */}
 
-          <div className="row">
+          {/* <div className="row">
             <div className="col-xl-7 col-sm-12 col-12 d-flex">
               <div className="card flex-fill">
                 <div className="card-header d-flex justify-content-between align-items-center">
@@ -645,7 +645,7 @@ const Dashboard = () => {
                 </table>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

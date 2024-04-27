@@ -17,12 +17,14 @@ import { PrivateRoute } from "./privateRoute";
 const AllRoutes = () => {
   const data = useSelector((state) => state.toggle_header);
   // const layoutStyles = useSelector((state) => state.layoutstyledata);
+  // console.log("data111", data);
+
   const HeaderLayout = () => (
     <div className={`main-wrapper ${data ? "header-collapse" : ""}`}>
       <Header />
       <Sidebar />
       <Outlet />
-      <ThemeSettings />
+      {/* <ThemeSettings /> */}
       <Loader />
     </div>
   );
@@ -31,7 +33,7 @@ const AllRoutes = () => {
     <div className={data ? "header-collapse" : ""}>
       <Outlet />
       <Loader />
-      <ThemeSettings />
+      {/* <ThemeSettings /> */}
     </div>
   );
 
@@ -43,8 +45,6 @@ const AllRoutes = () => {
       <ThemeSettings />
     </div>
   );
-
-  // console.log(publicRoutes, "dashboard");
 
   return (
     <div>
