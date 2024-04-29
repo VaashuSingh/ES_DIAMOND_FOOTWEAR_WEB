@@ -14,6 +14,8 @@ import { apiUrl } from "../../../core/json/api";
 import { toast } from "react-toastify";
 import Modal_Accept from "../../../core/modals/transaction/order-accept/accept-modal";
 import Datatable from "../../../core/pagination/datatable";
+import { getCurrentUsersDetails } from "../../../core/reusable_components/table/functions";
+import moment from "moment";
 
 const ItemsDeatilsShow = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,28 +24,36 @@ const ItemsDeatilsShow = () => {
   const [selecteditems, setSelecteditems] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
-  // const [rowDetails, setRowDetails] = useState({
-  //   series: "",
-  //   vchno: "",
-  //   vchDate: "",
-  //   party: "",
-  // });
-  // const [recordId, setRecordId] = useState(null);
   const [modalData, setModalData] = useState({});
+  const [formData, setFormData] = useState({
+    VchCode: 0,
+    VchDate: "",
+    VchNo: "",
+    AccCode: 0,
+    PoNo: "",
+    ItemCode: 0,
+    Color: "",
+    Size: "",
+    Unit: 0,
+    Qty: 0,
+    AltQty: 0,
+    ChallanQty: 0,
+    Price: 0,
+    MRP: 0,
+    Amount: 0,
+    TDate1: "",
+    TDate2: "",
+    TDate3: "",
+    TDate4: "",
+    Person: "",
+    Remarks: "",
+    Users: "",
+  });
+
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
   const recordId = state?.code;
-
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
-    total: 0,
-  });
-
-  const handleTableChange = (pagination, filters, sorter) => {
-    setPagination(pagination);
-  };
 
   // DataTable
   const columns = [
@@ -51,9 +61,6 @@ const ItemsDeatilsShow = () => {
       title: "Item Name",
       dataIndex: "itemname",
       key: "itemname",
-      // fixed: "left",
-      // width: 300,
-      // sorter: (a, b) => a.itemname.length - b.itemname.length,
       render: (text) => (
         <a
           to="#"
@@ -66,13 +73,13 @@ const ItemsDeatilsShow = () => {
 
     {
       title: "Color",
-      dataIndex: "para1",
+      dataIndex: "color",
       key: "1",
       // sorter: true,
     },
     {
       title: "Size",
-      dataIndex: "para2",
+      dataIndex: "size",
       key: "2",
       // sorter: true,
     },
@@ -84,7 +91,7 @@ const ItemsDeatilsShow = () => {
     },
     {
       title: "Challan Qty",
-      dataIndex: "challanqty",
+      dataIndex: "clQty",
       key: "4",
       // sorter: (a, b) => a.challanqty.length - b.challanqty.length,
     },
@@ -156,21 +163,26 @@ const ItemsDeatilsShow = () => {
         // console.log("data", data);
         const newdata = data.map((item, index) => ({
           key: index,
-          code: state?.code,
+          vchCode: item.vchCode,
+          vchDate: moment(item.vchDate, "DD-MM-YYYY").format("DD-MMM-YYYY"),
+          vchNo: item.vchNo,
+          poNo: item.poNo,
+          accCode: item.accCode,
+          itemCode: item.itemCode,
           itemname: item.itemName,
-          para1: item.para1,
-          para2: item.para2,
+          color: item.color,
+          size: item.size,
           qty: item.qty,
-          challanqty: item.clQty,
+          clQty: item.clQty,
+          uCode: item.uCode,
           unit: item.unit,
           altqty: item.altQty,
           price: item.price,
           mrp: item.mrp,
           amount: item.amount,
-          status: item.status,
+          status: 0,
         }));
         setTableDatas(newdata);
-        setPagination((prev) => ({ ...prev, total: newdata.length }));
       } catch (err) {
         toast.error(err.message);
       } finally {
@@ -179,14 +191,9 @@ const ItemsDeatilsShow = () => {
     };
 
     if (recordId) {
-      console.log("state", state);
-      console.log("setRecordId", recordId);
-
       getTableData(`${apiUrl}/GetOrderReceivedItemsDetails/${recordId}`);
     }
   }, [recordId]);
-
-  // console.log("modalData", modalData);
 
   const showModal = (record, index) => {
     setSelecteditems(record);
@@ -197,8 +204,6 @@ const ItemsDeatilsShow = () => {
     }
     setIsModalVisible(true);
   };
-
-  console.log("selectedRowData", selectedRowData);
 
   const handleModalOk = () => {
     setIsModalVisible(false);
@@ -216,15 +221,82 @@ const ItemsDeatilsShow = () => {
     handleModalOk();
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Check if any row has a status of "Pending"
+  const form_Validate = () => {
     const hasPendingRows = tableData.some((row) => !modalData[row.key]);
-
-    console.log("hasPendingRows", hasPendingRows);
     if (hasPendingRows) {
       toast.warning("Please complete all rows before saving.");
-      return;
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const prepare_form_Data = () => {
+    const users = getCurrentUsersDetails();
+    const formattedData = tableData.map((row) => {
+      const modalRowData = modalData[row.key];
+      return {
+        ...row,
+        mrp_date: moment(modalRowData.mrp_date, "DD-MM-YYYY").format(
+          "DD-MMM-YYYY"
+        ),
+        purc_date: moment(modalRowData.purc_date, "DD-MM-YYYY").format(
+          "DD-MMM-YYYY"
+        ),
+        prod_date: moment(modalRowData.prod_date, "DD-MM-YYYY").format(
+          "DD-MMM-YYYY"
+        ),
+        deli_date: moment(modalRowData.deli_date, "DD-MM-YYYY").format(
+          "DD-MMM-YYYY"
+        ),
+        remarks: modalRowData.remarks,
+        person: modalRowData.person,
+        users: users?.name,
+      };
+    });
+
+    // const newTableData = formData.map((item) => {
+    //   const { key, itemname, status, unit, ...rest } = item;
+    //   return rest;
+    // });
+
+    const actualFormData = {
+      orderAcceptTask: formattedData.map(
+        ({ key, itemname, status, unit, ...rest }) => rest
+      ),
+    };
+    return actualFormData;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // Check if any row has a status of "Pending"
+    setIsLoading(true);
+    try {
+      if (!form_Validate()) return;
+      const formdata = prepare_form_Data();
+      console.log("formdata", formdata);
+      // return;
+      const resp = await fetch(`${apiUrl}/SaveOrderAcceptTask`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(formdata),
+      });
+      const data = await resp.json();
+      console.log("data", data);
+      if (data.status === 1) {
+        toast.success(data.msg);
+        navigate("/order-accept-list");
+      } else {
+        toast.warning(data.msg);
+      }
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 

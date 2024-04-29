@@ -139,30 +139,28 @@ const OrdersReceivedList = () => {
       key: "actions",
       // render: (_, record) => (tableData.length ? renderActions(record) : ""),
       render: (text, record) => (
-        console.log("record", record),
-        (
-          <td className="action-table-data">
-            <div className="edit-delete-action">
-              <a
-                className="me-2 p-2"
-                // to={routes.ordacceptitemsdetviews}
-                // state={{
-                //   code: record?.id,
-                //   headers: {
-                //     series: record.series,
-                //     vchdate: record.date,
-                //     vchno: record.vchno,
-                //     party: record.customer,
-                //   },
-                // }}
-                onClick={() => handleRowClick(record)}
-              >
-                <i
-                  data-feather="eye"
-                  className="feather feather-eye action-eye"
-                />
-              </a>
-              {/* <Link
+        <td className="action-table-data">
+          <div className="edit-delete-action">
+            <a
+              className="me-2 p-2"
+              // to={routes.ordacceptitemsdetviews}
+              // state={{
+              //   code: record?.id,
+              //   headers: {
+              //     series: record.series,
+              //     vchdate: record.date,
+              //     vchno: record.vchno,
+              //     party: record.customer,
+              //   },
+              // }}
+              onClick={() => handleRowClick(record)}
+            >
+              <i
+                data-feather="eye"
+                className="feather feather-eye action-eye"
+              />
+            </a>
+            {/* <Link
               className="me-2 p-2"
               to="#"
               data-bs-toggle="modal"
@@ -174,9 +172,8 @@ const OrdersReceivedList = () => {
                 className="feather feather-shield shield"
               />
             </Link> */}
-            </div>
-          </td>
-        )
+          </div>
+        </td>
       ),
     },
   ];
@@ -563,7 +560,9 @@ const OrdersReceivedList = () => {
           {/* /Order Received list */}
         </div>
       </div>
-      <OrderReceivedView record={selectedRecord} />
+      <OrderReceivedView
+        record={selectedRecord}
+      />
       <OrdApproval
         record={selectedRecord}
         onSubmitSuccess={handleSubmitSuccess}

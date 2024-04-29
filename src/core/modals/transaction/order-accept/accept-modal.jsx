@@ -9,7 +9,6 @@ import { dateFormat } from "../../../json/api";
 dayjs.extend(customParseFormat);
 
 const Modal_Accept = ({ show, onHide, onSave, selectItems, modalData }) => {
-  const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState({
     mrp_date: null,
     purc_date: null,
@@ -115,12 +114,12 @@ const Modal_Accept = ({ show, onHide, onSave, selectItems, modalData }) => {
     // if (!form_Validate()) return;
     for (const dateKey in selectedDates) {
       if (!selectedDates[dateKey]) {
-        toast.warning(`Please select ${dateKey.replace("_", " ")} date`);
+        toast.warning(`Please select ${dateKey.replace("_", " ")}`);
         return;
       }
     }
 
-    console.log("input", input);
+    // console.log("input", input);
     onSave(input);
     handleClearFormInput();
   };
@@ -193,7 +192,7 @@ const Modal_Accept = ({ show, onHide, onSave, selectItems, modalData }) => {
                     type="text"
                     className="form-control"
                     name="person"
-                    value={input.person}
+                    value={input.person || ""}
                     onChange={handleInputChange}
                     placeholder="Person Name"
                     required
