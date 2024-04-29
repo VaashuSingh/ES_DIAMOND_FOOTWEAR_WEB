@@ -275,7 +275,7 @@ const ItemsDeatilsShow = () => {
     try {
       if (!form_Validate()) return;
       const formdata = prepare_form_Data();
-      console.log("formdata", formdata);
+      // console.log("formdata", formdata);
       // return;
       const resp = await fetch(`${apiUrl}/SaveOrderAcceptTask`, {
         method: "POST",
@@ -286,7 +286,7 @@ const ItemsDeatilsShow = () => {
         body: JSON.stringify(formdata),
       });
       const data = await resp.json();
-      console.log("data", data);
+      // console.log("data", data);
       if (data.status === 1) {
         toast.success(data.msg);
         navigate("/order-accept-list");
