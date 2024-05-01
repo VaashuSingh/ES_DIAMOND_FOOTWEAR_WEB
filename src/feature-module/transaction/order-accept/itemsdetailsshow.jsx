@@ -61,6 +61,7 @@ const ItemsDeatilsShow = () => {
       title: "Item Name",
       dataIndex: "itemname",
       key: "itemname",
+      width: "30%",
       render: (text) => (
         <a
           to="#"
@@ -70,59 +71,74 @@ const ItemsDeatilsShow = () => {
         </a>
       ),
     },
-
+    {
+      title: "Sole Branding",
+      dataIndex: "mname1",
+      width: "7%",
+      // key: "1",
+    },
+    {
+      title: "Socks Branding",
+      dataIndex: "mname2",
+      width: "7%",
+      // key: "2",
+    },
+    {
+      title: "Sole Mold",
+      dataIndex: "mname3",
+      width: "7%",
+      // key: "3",
+    },
     {
       title: "Color",
       dataIndex: "color",
-      key: "1",
+      key: "4",
       // sorter: true,
     },
     {
       title: "Size",
       dataIndex: "size",
-      key: "2",
-      // sorter: true,
+      key: "5",
     },
     {
       title: "Qty.",
       dataIndex: "qty",
-      key: "3",
+      key: "6",
       // sorter: (a, b) => a.qty.length - b.qty.length,
     },
-    {
-      title: "Challan Qty",
-      dataIndex: "clQty",
-      key: "4",
-      // sorter: (a, b) => a.challanqty.length - b.challanqty.length,
-    },
+    // {
+    //   title: "Challan Qty",
+    //   dataIndex: "clQty",
+    //   key: "4",
+    // },
     {
       title: "Unit",
       dataIndex: "unit",
-      key: "5",
+      key: "7",
       // sorter: (a, b) => a.unit.length - b.unit.length,
     },
     {
       title: "Alt. Qty. ",
       dataIndex: "altqty",
-      key: "6",
+      key: "8",
       // sorter: (a, b) => a.altqty.length - b.altqty.length,
     },
     {
       title: "Price",
       dataIndex: "price",
-      key: "7",
+      key: "9",
       // sorter: (a, b) => a.price.length - b.price.length,
     },
     {
       title: "MRP",
       dataIndex: "mrp",
-      key: "8",
+      key: "10",
       // sorter: (a, b) => a.mrp.length - b.mrp.length,
     },
     {
       title: "Amount",
       dataIndex: "amount",
-      key: "9",
+      key: "11",
       // sorter: (a, b) => a.amount.lenght - b.amount.lenght,
     },
     {
@@ -160,7 +176,7 @@ const ItemsDeatilsShow = () => {
         const resp = await fetch(url);
         const json = await resp.json();
         const data = json.data;
-        // console.log("data", data);
+        console.log("data", data);
         const newdata = data.map((item, index) => ({
           key: index,
           vchCode: item.vchCode,
@@ -170,6 +186,12 @@ const ItemsDeatilsShow = () => {
           accCode: item.accCode,
           itemCode: item.itemCode,
           itemname: item.itemName,
+          mname1: item.mName1,
+          mname2: item.mName1,
+          mname3: item.mName1,
+          mCode1: item.mCode1,
+          mCode2: item.mCode2,
+          mCode3: item.mCode3,
           color: item.color,
           size: item.size,
           qty: item.qty,
@@ -262,7 +284,8 @@ const ItemsDeatilsShow = () => {
 
     const actualFormData = {
       orderAcceptTask: formattedData.map(
-        ({ key, itemname, status, unit, ...rest }) => rest
+        ({ key, itemname, mname1, mname2, mname3, status, unit, ...rest }) =>
+          rest
       ),
     };
     return actualFormData;
@@ -275,7 +298,7 @@ const ItemsDeatilsShow = () => {
     try {
       if (!form_Validate()) return;
       const formdata = prepare_form_Data();
-      // console.log("formdata", formdata);
+      console.log("formdata", formdata);
       // return;
       const resp = await fetch(`${apiUrl}/SaveOrderAcceptTask`, {
         method: "POST",
@@ -370,6 +393,7 @@ const ItemsDeatilsShow = () => {
                     key={(record) => record.key}
                     columns={columns}
                     dataSource={tableData}
+                    bordered={true}
                     rowKey={(record) => record.key}
                   />
                 </div>
