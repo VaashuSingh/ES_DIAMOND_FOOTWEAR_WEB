@@ -25,30 +25,6 @@ const ItemsDeatilsShow = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
   const [modalData, setModalData] = useState({});
-  const [formData, setFormData] = useState({
-    VchCode: 0,
-    VchDate: "",
-    VchNo: "",
-    AccCode: 0,
-    PoNo: "",
-    ItemCode: 0,
-    Color: "",
-    Size: "",
-    Unit: 0,
-    Qty: 0,
-    AltQty: 0,
-    ChallanQty: 0,
-    Price: 0,
-    MRP: 0,
-    Amount: 0,
-    TDate1: "",
-    TDate2: "",
-    TDate3: "",
-    TDate4: "",
-    Person: "",
-    Remarks: "",
-    Users: "",
-  });
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -176,7 +152,7 @@ const ItemsDeatilsShow = () => {
         const resp = await fetch(url);
         const json = await resp.json();
         const data = json.data;
-        console.log("data", data);
+        // console.log("data", data);
         const newdata = data.map((item, index) => ({
           key: index,
           vchCode: item.vchCode,
@@ -298,7 +274,7 @@ const ItemsDeatilsShow = () => {
     try {
       if (!form_Validate()) return;
       const formdata = prepare_form_Data();
-      console.log("formdata", formdata);
+      // console.log("formdata", formdata);
       // return;
       const resp = await fetch(`${apiUrl}/SaveOrderAcceptTask`, {
         method: "POST",
@@ -311,10 +287,14 @@ const ItemsDeatilsShow = () => {
       const data = await resp.json();
       // console.log("data", data);
       if (data.status === 1) {
-        toast.success(data.msg);
+        toast.success(data.msg, {
+          position: "top-center",
+        });
         navigate("/order-accept-list");
       } else {
-        toast.warning(data.msg);
+        toast.warning(data.msg, {
+          position: "top-center",
+        });
       }
     } catch (err) {
       toast.error(err.message);
@@ -334,7 +314,7 @@ const ItemsDeatilsShow = () => {
               title={`Items Details`}
               subTitle={`Order Accept Busy Voucher Items Details`}
             />
-            <GoBackToPage title={"Order Accept"} />
+            <GoBackToPage title={`Order Accept`} />
             {/* <TableTopHead onRefresh={handleRefresh} /> */}
           </div>
           <div className="table-top form-control">

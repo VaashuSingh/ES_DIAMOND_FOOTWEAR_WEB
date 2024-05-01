@@ -186,9 +186,9 @@ const Header = () => {
             {/* <ImageWithBasePath src="assets/img/logo-small.png" alt="img" /> */}
             <img src={logo4} alt="img" />
           </Link>
-          <Link
+          <a
             id="toggle_btn"
-            to="#"
+            // to="#"
             style={{
               display: pathname.includes("tasks")
                 ? "none"
@@ -199,13 +199,13 @@ const Header = () => {
             onClick={handlesidebar}
           >
             <FeatherIcon icon="chevrons-left" className="feather-16" />
-          </Link>
+          </a>
         </div>
         {/* /Logo */}
-        <Link
+        <a
           id="mobile_btn"
           className="mobile_btn"
-          to="#"
+          // to="#"
           onClick={sidebarOverlay}
         >
           <span className="bar-icon">
@@ -213,15 +213,15 @@ const Header = () => {
             <span />
             <span />
           </span>
-        </Link>
+        </a>
         {/* Header Menu */}
         <ul className="nav user-menu">
           {/* Search */}
           <li className="nav-item nav-searchinputs">
             <div className="top-nav-search">
-              <Link to="#" className="responsive-search">
+              <a className="responsive-search">
                 <Search />
-              </Link>
+              </a>
               <form action="#" className="dropdown">
                 <div
                   className="searchinputs dropdown-toggle"
@@ -249,13 +249,13 @@ const Header = () => {
                     </h6>
                     <ul className="search-tags">
                       <li>
-                        <Link to="#">Products</Link>
+                        <a>Products</a>
                       </li>
                       <li>
-                        <Link to="#">Sales</Link>
+                        <a>Sales</a>
                       </li>
                       <li>
-                        <Link to="#">Applications</Link>
+                        <a>Applications</a>
                       </li>
                     </ul>
                   </div>
@@ -272,7 +272,7 @@ const Header = () => {
                     </p>
                     <p>Change Product Name</p>
                   </div>
-                  <div className="search-info">
+                  {/* <div className="search-info">
                     <h6>
                       <span>
                         <i data-feather="user" className="feather-16" />
@@ -311,7 +311,7 @@ const Header = () => {
                         </Link>
                       </li>
                     </ul>
-                  </div>
+                  </div> */}
                 </div>
               </form>
             </div>
@@ -377,16 +377,15 @@ const Header = () => {
 
           {/* Flag */}
           <li className="nav-item dropdown has-arrow flag-nav nav-item-box">
-            <Link
+            <a
               className="nav-link dropdown-toggle"
-              data-bs-toggle="dropdown"
-              to="#"
-              role="button"
+              // data-bs-toggle="dropdown"
+              // role="button"
             >
               {/* <i data-feather="globe" /> */}
               {/* <FeatherIcon icon="globe" /> */}
               <img src="assets/img/flags/in.png" alt="img" height={16} />
-            </Link>
+            </a>
             {/* <div className="dropdown-menu dropdown-menu-right">
               <Link to="#" className="dropdown-item active">
                 <ImageWithBasePath
