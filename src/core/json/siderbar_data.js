@@ -51,8 +51,36 @@ export const SidebarData = [
     submenuItems: [
       {
         label: "Order Accept",
-        link: "order-accept-list",
+        link: "/order-accept-list",
         icon: <Icon.Box />,
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "MRP",
+        link: "/order-accept-mrp",
+        icon: <Icon.Layers />,
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Purchase",
+        link: "/order-accept-purchase",
+        icon: <Icon.Package />,
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Production",
+        link: "/order-accept-production",
+        icon: <Icon.ShoppingBag />,
+        showSubRoute: false,
+        submenu: false,
+      },
+      {
+        label: "Delivery",
+        link: "/order-accept-delivery",
+        icon: <Icon.ShoppingCart />,
         showSubRoute: false,
         submenu: false,
       },

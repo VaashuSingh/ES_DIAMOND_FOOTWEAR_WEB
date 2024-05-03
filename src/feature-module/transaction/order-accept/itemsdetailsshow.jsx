@@ -24,7 +24,7 @@ const ItemsDeatilsShow = () => {
   const [selecteditems, setSelecteditems] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
-  const [modalData, setModalData] = useState({});
+  const [modalData, setModalData] = useState(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -158,6 +158,7 @@ const ItemsDeatilsShow = () => {
           vchCode: item.vchCode,
           vchDate: moment(item.vchDate, "DD-MM-YYYY").format("DD-MMM-YYYY"),
           vchNo: item.vchNo,
+          vchSeries: item.vchSeries,
           poNo: item.poNo,
           accCode: item.accCode,
           itemCode: item.itemCode,
@@ -247,9 +248,8 @@ const ItemsDeatilsShow = () => {
         deli_date: moment(modalRowData.deli_date, "DD-MM-YYYY").format(
           "DD-MMM-YYYY"
         ),
-        remarks: modalRowData.remarks,
+        remark: modalRowData.remark,
         person: modalRowData.person,
-        users: users?.name,
       };
     });
 
@@ -314,7 +314,7 @@ const ItemsDeatilsShow = () => {
               title={`Items Details`}
               subTitle={`Order Accept Busy Voucher Items Details`}
             />
-            <GoBackToPage title={`Order Accept`} />
+            <GoBackToPage title={`to Order Accept`} />
             {/* <TableTopHead onRefresh={handleRefresh} /> */}
           </div>
           <div className="table-top form-control">

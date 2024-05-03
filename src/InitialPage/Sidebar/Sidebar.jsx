@@ -32,7 +32,7 @@ const Sidebar = () => {
       setSubsidebar(subitem);
     }
   };
-
+  console.log("Location.pathname", Location.pathname);
   return (
     <div>
       <div className="sidebar" id="sidebar">
@@ -89,69 +89,72 @@ const Sidebar = () => {
                               >
                                 {title?.submenuItems?.map(
                                   (item, titleIndex) => (
-                                    <li
-                                      className="submenu submenu-two"
-                                      key={titleIndex}
-                                    >
-                                      {/* {item.lebel} */}
-                                      <Link
-                                        to={item?.link}
-                                        className={
-                                          item?.submenuItems
-                                            ?.map((link) => link?.link)
-                                            .includes(Location.pathname) ||
-                                          item?.link == Location.pathname
-                                            ? "active"
-                                            : ""
-                                        }
-                                        onClick={() => {
-                                          toggleSubsidebar(item?.label);
-                                        }}
+                                    console.log("item", item),
+                                    (
+                                      <li
+                                        className="submenu submenu-two"
+                                        key={titleIndex}
                                       >
-                                        {item?.label}
-                                        <span
+                                        {/* {item.lebel} */}
+                                        <Link
+                                          to={item?.link}
                                           className={
-                                            item?.submenu ? "menu-arrow" : ""
+                                            item?.submenuItems
+                                              ?.map((link) => link?.link)
+                                              .includes(Location.pathname) ||
+                                            item?.link == Location.pathname
+                                              ? "active"
+                                              : ""
                                           }
-                                        />
-                                      </Link>
-                                      <ul
-                                        style={{
-                                          display:
-                                            subsidebar == item?.label
-                                              ? "block"
-                                              : "none",
-                                        }}
-                                      >
-                                        {item?.submenuItems?.map(
-                                          (items, titleIndex) => (
-                                            <li key={titleIndex}>
-                                              {/* {item.lebel} */}
-                                              <Link
-                                                to={items?.link}
-                                                className={`${
-                                                  subsidebar == items?.label
-                                                    ? "submenu-two subdrop"
-                                                    : "submenu-two"
-                                                } ${
-                                                  items?.submenuItems
-                                                    ?.map((link) => link.link)
-                                                    .includes(
+                                          onClick={() => {
+                                            toggleSubsidebar(item?.label);
+                                          }}
+                                        >
+                                          {item?.label}
+                                          <span
+                                            className={
+                                              item?.submenu ? "menu-arrow" : ""
+                                            }
+                                          />
+                                        </Link>
+                                        <ul
+                                          style={{
+                                            display:
+                                              subsidebar == item?.label
+                                                ? "block"
+                                                : "none",
+                                          }}
+                                        >
+                                          {item?.submenuItems?.map(
+                                            (items, titleIndex) => (
+                                              <li key={titleIndex}>
+                                                {/* {item.lebel} */}
+                                                <Link
+                                                  to={items?.link}
+                                                  className={`${
+                                                    subsidebar == items?.label
+                                                      ? "submenu-two subdrop"
+                                                      : "submenu-two"
+                                                  } ${
+                                                    items?.submenuItems
+                                                      ?.map((link) => link.link)
+                                                      .includes(
+                                                        Location.pathname
+                                                      ) ||
+                                                    items?.link ==
                                                       Location.pathname
-                                                    ) ||
-                                                  items?.link ==
-                                                    Location.pathname
-                                                    ? "active"
-                                                    : ""
-                                                }`}
-                                              >
-                                                {items?.label}
-                                              </Link>
-                                            </li>
-                                          )
-                                        )}
-                                      </ul>
-                                    </li>
+                                                      ? "active"
+                                                      : ""
+                                                  }`}
+                                                >
+                                                  {items?.label}
+                                                </Link>
+                                              </li>
+                                            )
+                                          )}
+                                        </ul>
+                                      </li>
+                                    )
                                   )
                                 )}
                               </ul>

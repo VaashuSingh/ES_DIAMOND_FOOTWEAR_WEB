@@ -14,7 +14,7 @@ const Modal_Accept = ({ show, onHide, onSave, selectItems, modalData }) => {
     purc_date: null,
     prod_date: null,
     deli_date: null,
-    remarks: "",
+    remark: "",
     person: "",
   });
 
@@ -45,7 +45,7 @@ const Modal_Accept = ({ show, onHide, onSave, selectItems, modalData }) => {
       purc_date: modalData?.data?.purc_date,
       prod_date: modalData?.data?.prod_date,
       deli_date: modalData?.data?.deli_date,
-      remarks: modalData?.data?.remarks,
+      remark: modalData?.data?.remark,
       person: modalData?.data?.person,
     });
   }, [modalData]);
@@ -78,7 +78,7 @@ const Modal_Accept = ({ show, onHide, onSave, selectItems, modalData }) => {
       purc_date: null,
       prod_date: null,
       deli_date: null,
-      remarks: "",
+      remark: "",
       person: "",
     });
 
@@ -164,7 +164,6 @@ const Modal_Accept = ({ show, onHide, onSave, selectItems, modalData }) => {
                           className="form-control filterdatepicker"
                           format={dateFormat}
                           placeholder="Date"
-                          style={{ zIndex: 2000 }}
                         />
                       </div>
                     </div>
@@ -174,17 +173,18 @@ const Modal_Accept = ({ show, onHide, onSave, selectItems, modalData }) => {
 
               <div className="col-lg-12">
                 <div className="mb-3 input-blocks">
-                  <label className="form-label">Remarks</label>
+                  <label className="form-label">remark</label>
                   <textarea
                     type="text"
                     className="form-control"
-                    name="remarks"
-                    value={input.remarks}
+                    name="remark"
+                    value={input.remark}
                     onChange={handleInputChange}
                     placeholder="Type Message"
+                    maxLength={200}
                     required
                   />
-                  <p className="red">Maximum 100 Characters</p>
+                  <p className="red">Maximum 200 Characters</p>
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Responeble Person</label>

@@ -8,28 +8,6 @@ export const PrivateRoute = (props) => {
   const location = useLocation();
   const { children } = props;
 
-  // if (!sessionStorage.getItem("token"))
-  //   return <Navigate replace={true} to="/signin" />;
-
-  const isLoggedIn = sessionStorage.getItem("token") !== null;
-
-  // console.log("gdgdgd", `${location.pathname}${location.search}`);
-
-  // useEffect(() => {
-  //   console.log("Private pathname", location.pathname);
-  //   console.log("Private search", location.search);
-
-  //   if (!isLoggedIn && location.pathname !== "/signin") {
-  //     window.alert("You must log in first!");
-  //     return <Navigate replace={true} to="/signin" />;
-  //   } else if (isLoggedIn && location.pathname === "/signin") {
-  //     return <Navigate replace={true} to="/signin" />;
-  //   }
-  // }, [location]);
-
-  // const isLoggedIn = localStorage.getItem("userData") !== null;
-  // console.log("isLoggedIn", isLoggedIn);
-
   // const isAuthenticated = () => {
   //   return new Promise((resolve) => {
   //     const token = localStorage.getItem("token");
@@ -45,20 +23,6 @@ export const PrivateRoute = (props) => {
   //       resolve(false); // Error occurred, user is not authenticated
   //     }
   //   });
-  // };
-
-  // useEffect(() => {
-  //   checkAuthentication();
-  // }, []);
-
-  // const checkAuthentication = async () => {
-  //   try {
-  //     const authenticated = await isAuthenticated();
-  //     console.log("Authentication status:", authenticated);
-  //     setIsLoggedIn(authenticated);
-  //   } catch (error) {
-  //     console.error("Error checking authentication:", error);
-  //   }
   // };
 
   // useEffect(() => {
@@ -79,13 +43,15 @@ export const PrivateRoute = (props) => {
 
   // console.log("from", { from: `${location.pathname}${location.search}` });
 
-  return isLoggedIn ? (
-    <>{children}</>
-  ) : (
-    <Navigate
-      replace={true}
-      to="/signin"
-      state={{ from: `${location.pathname}${location.search}` }}
-    />
-  );
+  if (!sessionStorage.getItem("token")) {
+    return (
+      <Navigate
+        replace={true}
+        to="/signin"
+        state={{ from: `${location.pathname}${location.search}` }}
+      />
+    );
+  }
+
+  return <>{children}</>;
 };

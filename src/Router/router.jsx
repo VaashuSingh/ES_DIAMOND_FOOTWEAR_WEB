@@ -15,12 +15,15 @@ import { PrivateRoute } from "./privateRoute";
 //import LoadingSpinner from "../InitialPage/Sidebar/LoadingSpinner";
 
 const AllRoutes = () => {
-  const data = useSelector((state) => state.toggle_header);
+  const isHeaderCollapsed = useSelector((state) => state.toggle_header);
+
   // const layoutStyles = useSelector((state) => state.layoutstyledata);
   // console.log("data111", data);
 
   const HeaderLayout = () => (
-    <div className={`main-wrapper ${data ? "header-collapse" : ""}`}>
+    <div
+      className={`main-wrapper ${isHeaderCollapsed ? "header-collapse" : ""}`}
+    >
       <Header />
       <Sidebar />
       <Outlet />
@@ -30,7 +33,7 @@ const AllRoutes = () => {
   );
 
   const Authpages = () => (
-    <div className={data ? "header-collapse" : ""}>
+    <div className={isHeaderCollapsed ? "header-collapse" : ""}>
       <Outlet />
       <Loader />
       {/* <ThemeSettings /> */}
@@ -59,7 +62,8 @@ const AllRoutes = () => {
           path="/"
           element={
             <PrivateRoute>
-              <HeaderLayout />
+              {" "}
+              <HeaderLayout />{" "}
             </PrivateRoute>
           }
         >

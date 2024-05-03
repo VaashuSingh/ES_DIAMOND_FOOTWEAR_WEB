@@ -198,7 +198,7 @@ const GoBackToPage = (props) => {
         <div className="page-btn">
           <a className="btn btn-secondary" onClick={() => navigate(-1)}>
             <ArrowLeft className="me-2" />
-            {`Back to ${props.title}`}
+            {`Back ${props.title}`}
           </a>
         </div>
       </li>
@@ -221,8 +221,6 @@ const GoBackToPage = (props) => {
     </ul>
   );
 };
-
-
 
 export {
   PageTopHeaderLeft,

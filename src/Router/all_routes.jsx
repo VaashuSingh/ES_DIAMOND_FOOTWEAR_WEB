@@ -2,7 +2,13 @@ export const all_routes = {
   dashboard: "/dashboard",
   ordacceptlist: "/order-accept-list",
   ordaccept: "/order-accept",
+
+  //Transactions
   ordacceptitemsdetviews: "/order-accept-items-details",
+  ordacceptmrptable: "/order-accept-mrp",
+  ordacceptpurctable: "/order-accept-purchase",
+  ordacceptprodtable: "/order-accept-production",
+  ordacceptdeliprod: "/order-accept-delivery",
 
   productlist: "/product-list",
   addproduct: "/add-product",

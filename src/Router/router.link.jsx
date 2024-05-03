@@ -197,9 +197,8 @@ import Coupons from "../feature-module/coupons/coupons";
 //Transaction
 import AcceptList from "../feature-module/transaction/order-accept/tablelist";
 import ItemsDeatilsShow from "../feature-module/transaction/order-accept/itemsdetailsshow";
-
+import Order_MRP_Table from "../feature-module/transaction/order-accept/mrptable";
 import { all_routes } from "./all_routes";
-import { element } from "prop-types";
 
 export const publicRoutes = [
   {
@@ -1412,6 +1411,34 @@ export const publicRoutes = [
     path: routes.ordacceptitemsdetviews,
     name: "ordacceptitemsdetviews",
     element: <ItemsDeatilsShow />,
+    route: Route,
+  },
+  {
+    id: 119,
+    path: routes.ordacceptmrptable,
+    name: "ordacceptmrptable",
+    element: <Order_MRP_Table identity={1} />,
+    route: Route,
+  },
+  {
+    id: 120,
+    path: routes.ordacceptpurctable,
+    name: "ordacceptmrptable",
+    element: <Order_MRP_Table identity={2} />,
+    route: Route,
+  },
+  {
+    id: 121,
+    path: routes.ordacceptprodtable,
+    name: "ordacceptmrptable",
+    element: <Order_MRP_Table identity={3} />,
+    route: Route,
+  },
+  {
+    id: 122,
+    path: routes.ordacceptdeliprod,
+    name: "ordacceptmrptable",
+    element: <Order_MRP_Table identity={4} />,
     route: Route,
   },
 ];
