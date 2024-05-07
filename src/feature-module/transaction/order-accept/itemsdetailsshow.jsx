@@ -24,7 +24,7 @@ const ItemsDeatilsShow = () => {
   const [selecteditems, setSelecteditems] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
-  const [modalData, setModalData] = useState(null);
+  const [modalData, setModalData] = useState({});
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -152,7 +152,7 @@ const ItemsDeatilsShow = () => {
         const resp = await fetch(url);
         const json = await resp.json();
         const data = json.data;
-        // console.log("data", data);
+        console.log("data", data);
         const newdata = data.map((item, index) => ({
           key: index,
           vchCode: item.vchCode,

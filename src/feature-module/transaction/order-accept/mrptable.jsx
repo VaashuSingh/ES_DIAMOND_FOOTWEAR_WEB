@@ -27,6 +27,7 @@ const MRP_Table = (props) => {
 
   const handleSubmitSuccess = () => {
     if (props.identity) {
+      handle_form_clear();
       getTableData(`${apiUrl}/GetTaskApprovelVch/${props.identity}`);
     }
   };
@@ -38,21 +39,12 @@ const MRP_Table = (props) => {
 
   const expandedRowRender = (record) => {
     const columns2 = [
-      { title: "Date", dataIndex: "vchdate", key: "date" },
-      { title: "Series", dataIndex: "vchseries", key: "series" },
-      {
-        title: "Vch No.",
-        dataIndex: "vchno",
-        key: "vchno",
-        // render: () => <Badge status="success" text="Finished" />,
-      },
       { title: "Customer", dataIndex: "customer", key: "customer" },
       { title: "Po No.", dataIndex: "pono", key: "pono" },
       { title: "Person", dataIndex: "person", key: "person" },
       { title: "Task_Desc", dataIndex: "taskdesc", key: "taskdesc" },
-      { title: "Task_Date", dataIndex: "taskdate", key: "taskdate" },
+      { title: "Completion Date", dataIndex: "taskdate", key: "taskdate" },
     ];
-    // console.log("record.expandedData", record.expandedData);
     return (
       <Table
         className="m-0"
@@ -78,17 +70,19 @@ const MRP_Table = (props) => {
         </a>
       ),
     },
-    { title: "Sole Branding", dataIndex: "mname1", key: "1" },
-    { title: "Socks Branding", dataIndex: "mname2", key: "2" },
-    { title: "Sole Mold", dataIndex: "mname3", key: "3" },
-    { title: "Color", dataIndex: "color", key: "4" },
-    { title: "Size", dataIndex: "size", key: "5" },
-    { title: "Unit", dataIndex: "unit", key: "6" },
-    { title: "Qty.", dataIndex: "qty", key: "7" },
-    { title: "Alt. Qty. ", dataIndex: "altqty", key: "8" },
-    { title: "Price", dataIndex: "price", key: "9" },
-    { title: "MRP", dataIndex: "mrp", key: "10" },
-    { title: "Amount", dataIndex: "amount", key: "11" },
+    { title: "Vch No", dataIndex: "vchno", key: "1" },
+    { title: "Vch Date", dataIndex: "vchdate", key: "2" },
+    { title: "Sole Branding", dataIndex: "mname1", key: "3" },
+    { title: "Socks Branding", dataIndex: "mname2", key: "4" },
+    { title: "Sole Mold", dataIndex: "mname3", key: "5" },
+    { title: "Color", dataIndex: "color", key: "6" },
+    { title: "Size", dataIndex: "size", key: "7" },
+    { title: "Unit", dataIndex: "unit", key: "8" },
+    { title: "Qty.", dataIndex: "qty", key: "9" },
+    { title: "Alt. Qty. ", dataIndex: "altqty", key: "10" },
+    { title: "Price", dataIndex: "price", key: "11" },
+    { title: "MRP", dataIndex: "mrp", key: "12" },
+    { title: "Amount", dataIndex: "amount", key: "13" },
     {
       title: "Status",
       dataIndex: "status",
@@ -123,6 +117,7 @@ const MRP_Table = (props) => {
 
   useEffect(() => {
     if (props.identity) {
+      handle_form_clear();
       headers_Details(props?.identity);
       getTableData(`${apiUrl}/GetTaskApprovelVch/${props.identity}`);
     }
@@ -137,8 +132,6 @@ const MRP_Table = (props) => {
       // console.log("data", data);
       const newdata = data?.map((item, index) => ({
         expandedData: {
-          vchdate: moment(item.vchDate, "DD-MM-YYYY").format("DD-MMM-YYYY"),
-          vchno: item.vchNo,
           pono: item.poNo,
           vchseries: item.vchSeries,
           customer: item.accName,
@@ -148,9 +141,12 @@ const MRP_Table = (props) => {
         },
         key: index,
         vchCode: item.vchCode,
+        taskCode: item.taskCode,
         taskId: item.taskId,
-        taskcode: item.taskCode,
+        itemCode: item.itemCode,
         itemname: item.itemName,
+        vchdate: moment(item.vchDate, "DD-MM-YYYY").format("DD-MMM-YYYY"),
+        vchno: item.vchNo,
         mname1: item.mName1,
         mname2: item.mName2,
         mname3: item.mName3,
@@ -171,6 +167,11 @@ const MRP_Table = (props) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handle_form_clear = () => {
+    setData([]);
+    setSearchTable(null);
   };
 
   const handleRowExpand = (expanded, record) => {
