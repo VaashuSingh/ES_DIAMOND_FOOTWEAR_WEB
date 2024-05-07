@@ -4,16 +4,12 @@ import Loader_2 from "../../loader-2/loader-2";
 import {
   GoBackToPage,
   PageTopHeaderLeft,
-  TableTopHead,
-  TableTopHeader,
 } from "../../../core/reusable_components/table/TableHead";
 import { Table, Tag } from "antd";
-// import Table from "../../../core/pagination/datatable";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { apiUrl } from "../../../core/json/api";
 import { toast } from "react-toastify";
 import Modal_Accept from "../../../core/modals/transaction/order-accept/accept-modal";
-import Datatable from "../../../core/pagination/datatable";
 import { getCurrentUsersDetails } from "../../../core/reusable_components/table/functions";
 import moment from "moment";
 
@@ -152,7 +148,7 @@ const ItemsDeatilsShow = () => {
         const resp = await fetch(url);
         const json = await resp.json();
         const data = json.data;
-        console.log("data", data);
+        // console.log("data", data);
         const newdata = data.map((item, index) => ({
           key: index,
           vchCode: item.vchCode,
@@ -231,7 +227,6 @@ const ItemsDeatilsShow = () => {
   };
 
   const prepare_form_Data = () => {
-    const users = getCurrentUsersDetails();
     const formattedData = tableData.map((row) => {
       const modalRowData = modalData[row.key];
       return {

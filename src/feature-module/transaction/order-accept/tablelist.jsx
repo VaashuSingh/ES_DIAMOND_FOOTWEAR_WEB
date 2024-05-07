@@ -7,12 +7,10 @@ import Select from "react-select";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import Table from "../../../core/pagination/datatable";
-import OrdApproval from "../../../core/modals/transaction/order-accept/approvalorders";
 import { apiUrl } from "../../../core/json/api";
 import { toast } from "react-toastify";
 import Loader_2 from "../../loader-2/loader-2";
 import { DatePicker } from "antd";
-import OrderReceivedView from "../../../core/modals/transaction/order-accept/vieworders";
 import moment from "moment/moment";
 import {
   PageTopHeaderLeft,
@@ -256,11 +254,6 @@ const OrdersReceivedList = () => {
     }
   };
 
-  const OnRowHandleClick = (selectedRecord) => {
-    setSelectedRecord("");
-    setSelectedRecord(selectedRecord);
-  };
-
   const handleSubmitSuccess = () => {
     getTableData(`${apiUrl}/GetOrderReceivedDetails`);
     setSelectedRecord(null);
@@ -283,37 +276,6 @@ const OrdersReceivedList = () => {
       return true;
     }
   };
-
-  // const applyFilter = async () => {
-  //   setLoading(true);
-  //   getTableData(`${apiUrl}/GetOrderReceivedDetails`);
-  //   let filterData = [...tableData];
-  //   if (selectedisFilterVal.startDate && selectedisFilterVal.endDate) {
-  //     const startDate_filter = selectedisFilterVal.startDate;
-  //     const endDate_filter = selectedisFilterVal.endDate;
-  //     console.log("startDate_filter", startDate_filter);
-
-  //     console.log("endDate_filter", endDate_filter);
-
-  //     const resp = await fetch(`${apiUrl}/GetOrderReceivedDetails`);
-  //     const json = await resp.json();
-  //     const data = json.data;
-  //     console.log("data", data);
-  //     if (json.status === 1) {
-  //       // Filter data based on date range
-  //       filterData = data.filter((row) => {
-  //         return (
-  //           row.vchDate >= startDate_filter && row.vchDate <= endDate_filter
-  //         );
-  //       });
-  //     } else {
-  //       toast.error(data.msg);
-  //     }
-  //   }
-  //   console.log("filterData", filterData);
-  //   setTableData(filterData);
-  //   setLoading(false);
-  // };
 
   const applyFilter = async () => {
     try {
@@ -375,11 +337,6 @@ const OrdersReceivedList = () => {
     });
   };
 
-  // Pass getTableData function to child component
-  const handleRefresh = () => {
-    getTableData(`${apiUrl}/GetOrderReceivedDetails`);
-  };
-
   //Searching Input Box In Table
   const handleSearch = (value) => {
     const filteredData = tableData.filter((o) =>
@@ -389,17 +346,6 @@ const OrdersReceivedList = () => {
     );
     setSearchTable(filteredData);
   };
-
-  // const navigate = useNavigate();
-
-  // const handleRowClick = (rowId, path) => {
-  //   // Navigate to the second form and pass row ID and path as state
-  //   console.log("row clicked", rowId);
-  //   console.log("row path", path);
-
-  //   navigate("/order-accept-items-details", { state: { rowId, path } });
-  //   // navigate("/second-form", { state: { rowId, path } });
-  // };
 
   return (
     <div>
@@ -560,13 +506,6 @@ const OrdersReceivedList = () => {
           {/* /Order Received list */}
         </div>
       </div>
-      <OrderReceivedView
-        record={selectedRecord}
-      />
-      <OrdApproval
-        record={selectedRecord}
-        onSubmitSuccess={handleSubmitSuccess}
-      />
     </div>
   );
 };

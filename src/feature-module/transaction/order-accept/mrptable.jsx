@@ -13,7 +13,7 @@ import {
 } from "../../../core/reusable_components/table/TableHead";
 import Modal_Task_Approvel from "../../../core/modals/transaction/order-accept/approvel-modal";
 
-const MRP_Table = (props) => {
+const Order_Task_Table = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
   const [headers, setHeaders] = useState({ title: "", subtitle: "" });
@@ -270,8 +270,8 @@ const MRP_Table = (props) => {
   );
 };
 
-MRP_Table.prototype = {
+Order_Task_Table.prototype = {
   identity: PropTypes.number.isRequired,
 };
 
-export default MRP_Table;
+export default Order_Task_Table;
