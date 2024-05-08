@@ -10,7 +10,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { apiUrl } from "../../../core/json/api";
 import { toast } from "react-toastify";
 import Modal_Accept from "../../../core/modals/transaction/order-accept/accept-modal";
-import { getCurrentUsersDetails } from "../../../core/reusable_components/table/functions";
+import {
+  cancelCallback,
+  // confirmationCallback,
+  getCurrentUsersDetails,
+  showConfirmationAlert,
+} from "../../../core/json/functions";
 import moment from "moment";
 
 const ItemsDeatilsShow = () => {
@@ -265,37 +270,44 @@ const ItemsDeatilsShow = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Check if any row has a status of "Pending"
-    setIsLoading(true);
-    try {
-      if (!form_Validate()) return;
+    if (!form_Validate()) return;
+    const handleSaveData = async () => {
+      setIsLoading(true);
       const formdata = prepare_form_Data();
       // console.log("formdata", formdata);
-      // return;
-      const resp = await fetch(`${apiUrl}/SaveOrderAcceptTask`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(formdata),
-      });
-      const data = await resp.json();
-      // console.log("data", data);
-      if (data.status === 1) {
-        toast.success(data.msg, {
-          position: "top-center",
+      try {
+        const resp = await fetch(`${apiUrl}/SaveOrderAcceptTask`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(formdata),
         });
-        navigate("/order-accept-list");
-      } else {
-        toast.warning(data.msg, {
-          position: "top-center",
-        });
+        const data = await resp.json();
+        // console.log("data", data);
+        if (data.status === 1) {
+          toast.success(data.msg, {
+            position: "top-center",
+          });
+          navigate("/order-accept-list");
+        } else {
+          toast.warning(data.msg, {
+            position: "top-center",
+          });
+        }
+      } catch (err) {
+        toast.error(err.message);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err) {
-      toast.error(err.message);
-    } finally {
-      setIsLoading(false);
-    }
+    };
+
+    showConfirmationAlert(
+      "do you want to approved in this voucher",
+      handleSaveData,
+      cancelCallback
+    );
   };
 
   return (

@@ -26,7 +26,6 @@ const OrdersReceivedList = () => {
   const [selectedstartDate, setSelectedstartDate] = useState(null);
   const [selectedendDate, setSelectedendDate] = useState(null);
   const [tableData, setTableData] = useState([]);
-  const [selectedRecord, setSelectedRecord] = useState(null);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [seriesOpt, setSeriesOpt] = useState([]);
   const [partyOpt, setPartyOpt] = useState([]);
@@ -252,11 +251,6 @@ const OrdersReceivedList = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSubmitSuccess = () => {
-    getTableData(`${apiUrl}/GetOrderReceivedDetails`);
-    setSelectedRecord(null);
   };
 
   const ValidationApplied = (SelectedFilter) => {

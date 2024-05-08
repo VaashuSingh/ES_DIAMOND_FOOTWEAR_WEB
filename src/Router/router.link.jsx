@@ -196,8 +196,8 @@ import Coupons from "../feature-module/coupons/coupons";
 
 //Transaction
 import AcceptList from "../feature-module/transaction/order-accept/tablelist";
-import ItemsDeatilsShow from "../feature-module/transaction/order-accept/itemsdetailsshow";
-import Order_Order_Task_Table from "../feature-module/transaction/order-accept/mrptable";
+import ItemsDeatilsShow from "../feature-module/transaction/order-accept/itemsdetails";
+import Order_Order_Task_Table from "../feature-module/transaction/order-accept/tasktable";
 import { all_routes } from "./all_routes";
 
 export const publicRoutes = [

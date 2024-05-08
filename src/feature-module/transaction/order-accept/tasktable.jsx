@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
-import { Badge, Table, Tag } from "antd";
+import { Table, Tag } from "antd";
 import moment from "moment";
 import { toast } from "react-toastify";
 import PropTypes from "prop-types";
@@ -21,20 +21,42 @@ const Order_Task_Table = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [searchTable, setSearchTable] = useState(null);
-  const handleModalCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleSubmitSuccess = () => {
-    if (props.identity) {
-      handle_form_clear();
-      getTableData(`${apiUrl}/GetTaskApprovelVch/${props.identity}`);
-    }
-  };
 
   const handleShowModal = (record) => {
     setSelectedRecord(record);
     setIsModalVisible(true);
+  };
+
+  const headers_Details = (value) => {
+    switch (value) {
+      case 1:
+        setHeaders({
+          title: "MRP Approvel",
+          subtitle: "Order MRP Approvel in Items",
+        });
+        break;
+      case 2:
+        setHeaders({
+          title: "Purchase Approvel",
+          subtitle: "Order Purchase Approvel in Items",
+        });
+        break;
+      case 3:
+        setHeaders({
+          title: "Production Approvel",
+          subtitle: "Order Production Approvel in Items",
+        });
+        break;
+      case 4:
+        setHeaders({
+          title: "Delivery Approvel",
+          subtitle: "Order Delivery Approvel in Items",
+        });
+        break;
+      default:
+        console.log("default");
+        break;
+    }
   };
 
   const expandedRowRender = (record) => {
@@ -56,12 +78,17 @@ const Order_Task_Table = (props) => {
     );
   };
 
+  const handleRowExpand = (expanded, record) => {
+    // If row is expanded, set the expanded row keys to only this row's key
+    setExpandedRowKeys(expanded ? [record.key] : []);
+  };
+
   const columns1 = [
     {
       title: "Item Name",
       dataIndex: "itemname",
       key: "itemname",
-      fixed: "left",
+      // fixed: "left",
       width: 500,
       sorter: (a, b) => a.itemname.length - b.itemname.length,
       render: (text) => (
@@ -169,46 +196,20 @@ const Order_Task_Table = (props) => {
     }
   };
 
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleSubmitSuccess = () => {
+    if (props.identity) {
+      handle_form_clear();
+      getTableData(`${apiUrl}/GetTaskApprovelVch/${props.identity}`);
+    }
+  };
+
   const handle_form_clear = () => {
     setData([]);
     setSearchTable(null);
-  };
-
-  const handleRowExpand = (expanded, record) => {
-    // If row is expanded, set the expanded row keys to only this row's key
-    setExpandedRowKeys(expanded ? [record.key] : []);
-  };
-
-  const headers_Details = (value) => {
-    switch (value) {
-      case 1:
-        setHeaders({
-          title: "MRP Approvel",
-          subtitle: "Order MRP Approvel in Items",
-        });
-        break;
-      case 2:
-        setHeaders({
-          title: "Purchase Approvel",
-          subtitle: "Order Purchase Approvel in Items",
-        });
-        break;
-      case 3:
-        setHeaders({
-          title: "Production Approvel",
-          subtitle: "Order Production Approvel in Items",
-        });
-        break;
-      case 4:
-        setHeaders({
-          title: "Delivery Approvel",
-          subtitle: "Order Delivery Approvel in Items",
-        });
-        break;
-      default:
-        console.log("default");
-        break;
-    }
   };
 
   //Searching Input Box In Table
