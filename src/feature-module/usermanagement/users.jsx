@@ -15,7 +15,7 @@ import {
   TableDataSearch,
   PageTopRight,
   PageTopHeaderLeft,
-} from "../../core/reusable_components/table/TableHead";
+} from "../../core/reusable_components/table/tables";
 
 const Users = () => {
   const [loading, setLoading] = useState(false);

@@ -4,7 +4,7 @@ import Loader_2 from "../../loader-2/loader-2";
 import {
   GoBackToPage,
   PageTopHeaderLeft,
-} from "../../../core/reusable_components/table/TableHead";
+} from "../../../core/reusable_components/table/tables";
 import { Table, Tag } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { apiUrl } from "../../../core/json/api";

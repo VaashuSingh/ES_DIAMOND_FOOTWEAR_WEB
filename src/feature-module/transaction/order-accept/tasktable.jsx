@@ -10,7 +10,7 @@ import {
   GoBackToPage,
   PageTopHeaderLeft,
   TableDataSearch,
-} from "../../../core/reusable_components/table/TableHead";
+} from "../../../core/reusable_components/table/tables";
 import Modal_Task_Approvel from "../../../core/modals/transaction/order-accept/approvel-modal";
 
 const Order_Task_Table = (props) => {
@@ -157,7 +157,7 @@ const Order_Task_Table = (props) => {
       const json = await resp.json();
       const data = json.data;
       // console.log("data", data);
-      const newdata = data?.map((item, index) => ({
+      const tdata = data?.map((item, index) => ({
         expandedData: {
           pono: item.poNo,
           vchseries: item.vchSeries,
@@ -187,8 +187,8 @@ const Order_Task_Table = (props) => {
         amount: item.amount,
         status: item.taskStatus,
       }));
-      setData(newdata);
-      console.log(newdata);
+      setData(tdata);
+      // console.log(newdata);
     } catch (err) {
       toast.error(err.message);
     } finally {

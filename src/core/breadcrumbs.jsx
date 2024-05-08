@@ -5,7 +5,6 @@ import ImageWithBasePath from "./img/imagewithbasebath";
 import { PlusCircle, Printer } from "react-feather";
 import { Download, RotateCcw } from "feather-icons-react/build/IconComponents";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-// import { setToogleHeader } from "../../core/redux/action";
 import { useDispatch, useSelector } from "react-redux";
 import { ChevronUp } from "react-feather";
 import { setToogleHeader } from "./redux/action";

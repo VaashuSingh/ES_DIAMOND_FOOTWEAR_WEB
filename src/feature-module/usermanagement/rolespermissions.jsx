@@ -13,7 +13,7 @@ import {
   TableHeadButton,
   TableDataSearch,
   PageTopHeaderLeft,
-} from "../../core/reusable_components/table/TableHead";
+} from "../../core/reusable_components/table/tables";
 
 const RolesPermissions = () => {
   // const route = all_routes;

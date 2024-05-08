@@ -18,7 +18,7 @@ import {
   PageTopRight,
   TableHeadButton,
   renderActions,
-} from "../../../core/reusable_components/table/TableHead";
+} from "../../../core/reusable_components/table/tables";
 import { all_routes } from "../../../Router/all_routes";
 
 const OrdersReceivedList = () => {
