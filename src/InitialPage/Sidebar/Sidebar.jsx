@@ -8,12 +8,7 @@ import CollapsedSidebar from "./collapsedSidebar";
 
 const Sidebar = () => {
   // const SidebarData = useSelector((state) => state.sidebar_data);
-  // console.log(sidebarData, "sidebar");
-
   const Location = useLocation();
-
-  // console.log("Location.pathname", Location.pathname);
-
   const [subOpen, setSubopen] = useState("");
   const [subsidebar, setSubsidebar] = useState("");
 
@@ -32,7 +27,7 @@ const Sidebar = () => {
       setSubsidebar(subitem);
     }
   };
-  // console.log("Location.pathname", Location.pathname);
+
   return (
     <div>
       <div className="sidebar" id="sidebar">
@@ -46,7 +41,7 @@ const Sidebar = () => {
                     <h6 className="submenu-hdr" key={mainLabel?.label}>
                       {mainLabel?.label}
                     </h6>
-                    <ul>
+                    <ul key={index++}>
                       {mainLabel?.submenuItems?.map((title, i) => {
                         let link_array = [];
                         title?.submenuItems?.map((link) => {

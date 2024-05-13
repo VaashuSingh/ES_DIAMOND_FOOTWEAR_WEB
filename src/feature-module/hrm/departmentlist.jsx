@@ -107,17 +107,17 @@ const DepartmentList = () => {
         <ul className="team-members">
           <li>
             <Link to="#" title="John Doe" className="team-members">
-              <ImageWithBasePath alt="" src="assets/img/users/user-01.jpg" />
+              <ImageWithBasePath alt="img" src="assets/img/users/user-01.jpg" />
             </Link>
           </li>
           <li>
             <Link to="#" title="Richard Miles">
-              <ImageWithBasePath alt="" src="assets/img/users/user-02.jpg" />
+              <ImageWithBasePath alt="img" src="assets/img/users/user-02.jpg" />
             </Link>
           </li>
           <li>
             <Link to="#" title="Richard Miles">
-              <ImageWithBasePath alt="" src="assets/img/users/user-03.jpg" />
+              <ImageWithBasePath alt="img" src="assets/img/users/user-03.jpg" />
             </Link>
           </li>
           <li className="dropdown avatar-dropdown">

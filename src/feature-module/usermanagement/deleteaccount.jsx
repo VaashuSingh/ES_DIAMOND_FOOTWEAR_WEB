@@ -54,7 +54,7 @@ const DeleteAccount = () => {
             render: (text, record) => (
                 <span className="userimgname">
                     <Link to="/profile">
-                        <ImageWithBasePath alt="" src={record.img} className='product-img' />
+                        <ImageWithBasePath alt="img" src={record.img} className='product-img' />
                     </Link>
                     <Link to="/profile">{text}</Link>
                 </span>

@@ -80,7 +80,7 @@ const AttendanceAdmin = () => {
             render: (text, record) => (
                 <div className="userimgname">
                     <Link to="#" className='product-img'>
-                        <ImageWithBasePath alt="" src={record.img} />
+                        <ImageWithBasePath alt="img" src={record.img} />
                     </Link>
                     <div to="#" className='emp-team'>{text}</div>
                 </div>

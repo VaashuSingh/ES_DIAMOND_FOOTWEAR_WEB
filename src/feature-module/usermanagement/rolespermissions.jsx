@@ -4,7 +4,6 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import Table from "../../core/pagination/datatable";
 import AddRole from "../../core/modals/usermanagement/addrole";
-// import { all_routes } from "../../Router/all_routes";
 import { apiUrl } from "../../core/json/api";
 import { toast } from "react-toastify";
 import Loader_2 from "../loader-2/loader-2";
@@ -14,10 +13,10 @@ import {
   TableDataSearch,
   PageTopHeaderLeft,
 } from "../../core/reusable_components/table/tables";
+import { all_routes } from "../../Router/all_routes";
 
 const RolesPermissions = () => {
-  // const route = all_routes;
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const route = all_routes;
   const [loading, setLoading] = useState(false);
   const [tabledata, setTableData] = useState([]);
   const [mode, setMode] = useState("add");
@@ -41,32 +40,34 @@ const RolesPermissions = () => {
       dataIndex: "actions",
       key: "actions",
       render: (text, record) => (
-        <td className="action-table-data">
+        <div className="action-table-data-new">
           <div className="edit-delete-action">
             <Link
               className="me-2 p-2"
-              to="#"
               data-bs-toggle="modal"
               data-bs-target="#add-units"
               onClick={() => handleRowClick(record)}
             >
               <i data-feather="edit" className="feather-edit" />
             </Link>
-            {/* <Link className="me-2 p-2" to={route.permissions}>
+            <Link
+              className="me-2 p-2"
+              to={route.permissions}
+              state={{ record }}
+            >
               <i
                 data-feather="sheild"
                 className="feather feather-shield shield"
               />
-            </Link> */}
+            </Link>
             <Link
               className="confirm-text p-2"
-              to="#"
               onClick={() => showConfirmationAlert(record)}
             >
               <i data-feather="trash-2" className="feather-trash-2" />
             </Link>
           </div>
-        </td>
+        </div>
       ),
     },
   ];
@@ -167,10 +168,6 @@ const RolesPermissions = () => {
         MySwal.close();
       }
     });
-  };
-
-  const toggleFilterVisibility = () => {
-    setIsFilterVisible((prevVisibility) => !prevVisibility);
   };
 
   //Searching Input Box In Table

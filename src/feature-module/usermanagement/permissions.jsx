@@ -1,427 +1,261 @@
-import React, { useState } from 'react'
-import ImageWithBasePath from '../../core/img/imagewithbasebath'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { ChevronUp, Filter, Sliders, Zap } from 'react-feather';
-import { setToogleHeader } from '../../core/redux/action';
-import { useDispatch, useSelector } from 'react-redux';
-import Select from 'react-select';
-import { RotateCcw } from 'feather-icons-react/build/IconComponents';
-import { DatePicker } from 'antd';
+import React, { useEffect, useState } from "react";
+import {
+  PageTopHeaderLeft,
+  TableDataSearch,
+} from "../../core/reusable_components/table/tables";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import Loader_2 from "../loader-2/loader-2";
+import { apiUrl } from "../../core/json/api";
 
 const Permissions = () => {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [permissionData, setPermissionData] = useState([]);
+  const { state } = useLocation();
+  const roleId = state?.record?.id;
 
-    const dispatch = useDispatch();
-    const data = useSelector((state) => state.toggle_header);
-    const [isFilterVisible, setIsFilterVisible] = useState(false);
-    const toggleFilterVisibility = () => {
-        setIsFilterVisible((prevVisibility) => !prevVisibility);
+  useEffect(() => {
+    getuserRolePermission(
+      `${apiUrl}/GetUserRolePermissionMenu/${parseInt(roleId)}`
+    );
+  }, [roleId]);
+
+  // Fetch data from the API
+  const getuserRolePermission = async (url) => {
+    try {
+      setIsLoading(true);
+      const resp = await fetch(url);
+      const result = await resp.json();
+      // console.log("result", result);
+      setPermissionData(result?.data); // Set fetched data to state
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const columns = [
+    { title: "Module" },
+    { title: "Create" },
+    { title: "Edit" },
+    { title: "Delete" },
+    { title: "View" },
+  ];
+
+  const prepare_form_Data = (data) => {
+    const newData = {
+      roleId: roleId,
+      permissionData: data?.map((item) => {
+        const { menu, ...rest } = item;
+        return rest;
+      }),
     };
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const handleDateChange = (date) => {
-        setSelectedDate(date);
-    };
+    return newData;
+  };
 
-    const role = [
-        { value: 'Choose Role', label: 'Choose Role' },
-        { value: 'Admin', label: 'Admin' },
-        { value: 'Shop Owner', label: 'Shop Owner' },
-    ];
-   
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const resp = await fetch(`${apiUrl}/SaveUserRolePermissionResponse`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(prepare_form_Data(permissionData)),
+      });
+      const result = await resp.json();
+      // console.log("resp", result);
+      toast.success(result.msg, { position: "top-center" });
+      if (result.status === 1) navigate(-1);
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    const oldandlatestvalue = [
-        { value: 'date', label: 'Sort by Date' },
-        { value: 'newest', label: 'Newest' },
-        { value: 'oldest', label: 'Oldest' },
-    ];
-    const renderTooltip = (props) => (
-        <Tooltip id="pdf-tooltip" {...props}>
-            Pdf
-        </Tooltip>
+  const handleCheckboxChange = (menuId, field) => {
+    setPermissionData((prevData) =>
+      prevData.map((item) =>
+        item.menuId === menuId
+          ? { ...item, [field]: !item[field] ? 1 : 0 }
+          : item
+      )
     );
-    const renderExcelTooltip = (props) => (
-        <Tooltip id="excel-tooltip" {...props}>
-            Excel
-        </Tooltip>
-    );
-    const renderPrinterTooltip = (props) => (
-        <Tooltip id="printer-tooltip" {...props}>
-            Printer
-        </Tooltip>
-    );
-    const renderRefreshTooltip = (props) => (
-        <Tooltip id="refresh-tooltip" {...props}>
-            Refresh
-        </Tooltip>
-    );
-    const renderCollapseTooltip = (props) => (
-        <Tooltip id="refresh-tooltip" {...props}>
-            Collapse
-        </Tooltip>
-    )
-    return (
-        <div>
-            <div className="page-wrapper">
-                <div className="content">
-                    <div className="page-header">
-                        <div className="add-item d-flex">
-                            <div className="page-title">
-                                <h4>Permission</h4>
-                                <h6>Manage your permissions</h6>
-                            </div>
-                        </div>
-                        <ul className="table-top-head">
-                            <li>
-                                <OverlayTrigger placement="top" overlay={renderTooltip}>
-                                    <Link>
-                                        <ImageWithBasePath src="assets/img/icons/pdf.svg" alt="img" />
-                                    </Link>
-                                </OverlayTrigger>
-                            </li>
-                            <li>
-                                <OverlayTrigger placement="top" overlay={renderExcelTooltip}>
-                                    <Link data-bs-toggle="tooltip" data-bs-placement="top">
-                                        <ImageWithBasePath src="assets/img/icons/excel.svg" alt="img" />
-                                    </Link>
-                                </OverlayTrigger>
-                            </li>
-                            <li>
-                                <OverlayTrigger placement="top" overlay={renderPrinterTooltip}>
+  };
 
-                                    <Link data-bs-toggle="tooltip" data-bs-placement="top">
-                                        <i data-feather="printer" className="feather-printer" />
-                                    </Link>
-                                </OverlayTrigger>
-                            </li>
-                            <li>
-                                <OverlayTrigger placement="top" overlay={renderRefreshTooltip}>
+  const handleSelectAllCheckboxChange = (e) => {
+    const isChecked = e.target.checked;
+    setPermissionData((prevData) =>
+      prevData.map((item) => ({
+        ...item,
+        create: isChecked ? 1 : 0,
+        edit: isChecked ? 1 : 0,
+        delete: isChecked ? 1 : 0,
+        view: isChecked ? 1 : 0,
+      }))
+    );
+  };
 
-                                    <Link data-bs-toggle="tooltip" data-bs-placement="top">
-                                        <RotateCcw />
-                                    </Link>
-                                </OverlayTrigger>
-                            </li>
-                            <li>
-                                <OverlayTrigger placement="top" overlay={renderCollapseTooltip}>
-                                    <Link
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        id="collapse-header"
-                                        className={data ? "active" : ""}
-                                        onClick={() => { dispatch(setToogleHeader(!data)) }}
-                                    >
-                                        <ChevronUp />
-                                    </Link>
-                                </OverlayTrigger>
-                            </li>
-                        </ul>
-                    </div>
-                    {/* /product list */}
-                    <div className="card table-list-card">
-                        <div className="card-body">
-                            <div className="table-top">
-                                <div className="search-set">
-                                    <div className="search-input">
-                                        <input
-                                            type="text"
-                                            placeholder="Search"
-                                            className="form-control form-control-sm formsearch"
-                                        />
-                                        <Link to className="btn btn-searchset">
-                                            <i data-feather="search" className="feather-search" />
-                                        </Link>
-                                    </div>
-                                </div>
-                                <div className="search-path">
-                                    <Link className={`btn btn-filter ${isFilterVisible ? "setclose" : ""}`} id="filter_search">
-                                        <Filter
-                                            className="filter-icon"
-                                            onClick={toggleFilterVisibility}
-                                        />
-                                        <span onClick={toggleFilterVisibility}>
-                                            <ImageWithBasePath src="assets/img/icons/closes.svg" alt="img" />
-                                        </span>
-                                    </Link>
-                                </div>
-                                <div className="form-sort">
-                                    <Sliders className="info-img" />
-                                    <Select
-                                        className="select"
-                                        options={oldandlatestvalue}
-                                        placeholder="Newest"
-                                    />
-                                </div>
-                            </div>
-                            {/* /Filter */}
-                            <div
-                                className={`card${isFilterVisible ? ' visible' : ''}`}
-                                id="filter_inputs"
-                                style={{ display: isFilterVisible ? 'block' : 'none' }}
-                            >
-                                <div className="card-body pb-0">
-                                    <div className="row">
-                                        <div className="col-lg-3 col-sm-6 col-12">
-                                            <div className="input-blocks">
-                                                <Zap className="info-img" />
-                                                
-                                                <Select
-                                                className="select"
-                                                options={role}
-                                                placeholder="Choose Role"
-                                            />
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-3 col-sm-6 col-12">
-                                            <div className="input-blocks">
-                                                <div className="input-groupicon">
-                                                    <DatePicker
-                                                        selected={selectedDate}
-                                                        onChange={handleDateChange}
-                                                        type="date"
-                                                        className="filterdatepicker"
-                                                        dateFormat="dd-MM-yyyy"
-                                                        placeholder='Choose Date'
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-3 col-sm-6 col-12 ms-auto">
-                                            <div className="input-blocks">
-                                                <a className="btn btn-filters ms-auto">
-                                                    {" "}
-                                                    <i data-feather="search" className="feather-search" />{" "}
-                                                    Search{" "}
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* /Filter */}
-                            <div className="table-responsive">
-                                <table className="table  datanew">
-                                    <thead>
-                                        <tr>
-                                            <th className="no-sort">
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" id="select-all" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </th>
-                                            <th>Modules</th>
-                                            <th>Create</th>
-                                            <th>Edit</th>
-                                            <th>Delete</th>
-                                            <th>View</th>
-                                            <th className="no-sort">Allow all</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>Inventory</td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>Expense</td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>Product</td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>Settings</td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>Category</td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                            <td>
-                                                <label className="checkboxs">
-                                                    <input type="checkbox" />
-                                                    <span className="checkmarks" />
-                                                </label>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    {/* /product list */}
+  const handleRowCheckboxChange = (menuId, isChecked) => {
+    setPermissionData((prevData) =>
+      prevData.map((item) =>
+        item.menuId === menuId
+          ? {
+              ...item,
+              create: isChecked ? 1 : 0,
+              edit: isChecked ? 1 : 0,
+              delete: isChecked ? 1 : 0,
+              view: isChecked ? 1 : 0,
+            }
+          : item
+      )
+    );
+  };
+
+  return (
+    <>
+      {isLoading && <Loader_2 />}
+      <div className="page-wrapper">
+        <div className="content">
+          <div className="page-header">
+            <PageTopHeaderLeft
+              title={`Permission`}
+              subTitle={`Manage your permissions`}
+            />
+          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="card table-list-card">
+              <div className="card-body">
+                <div className="table-top">
+                  <div className="search-set">
+                    <TableDataSearch onSearch={" "} />
+                  </div>
                 </div>
+                <div className="table-responsive">
+                  <table className="table datanew">
+                    <thead>
+                      <tr>
+                        <th className="no-sort">
+                          <label className="checkboxs">
+                            <input
+                              type="checkbox"
+                              id="select-all"
+                              onChange={handleSelectAllCheckboxChange}
+                            />
+                            <span className="checkmarks" />
+                          </label>
+                        </th>
+                        {columns.map((column, index) => (
+                          <th key={index}>{column.title}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {permissionData.map((item) => (
+                        <tr key={item.menuId}>
+                          <td>
+                            <label className="checkboxs">
+                              <input
+                                type="checkbox"
+                                checked={
+                                  item.create &&
+                                  item.edit &&
+                                  item.delete &&
+                                  item.view
+                                }
+                                onChange={(e) =>
+                                  handleRowCheckboxChange(
+                                    item.menuId,
+                                    e.target.checked
+                                  )
+                                }
+                              />
+                              <span className="checkmarks" />
+                            </label>
+                          </td>
+                          <td>{item.menu}</td>
+                          <td>
+                            <label className="checkboxs">
+                              <input
+                                type="checkbox"
+                                checked={item.create}
+                                onChange={() =>
+                                  handleCheckboxChange(item.menuId, "create")
+                                }
+                              />
+                              <span className="checkmarks" />
+                            </label>
+                          </td>
+                          <td>
+                            <label className="checkboxs">
+                              <input
+                                type="checkbox"
+                                checked={item.edit}
+                                onChange={() =>
+                                  handleCheckboxChange(item.menuId, "edit")
+                                }
+                              />
+                              <span className="checkmarks" />
+                            </label>
+                          </td>
+                          <td>
+                            <label className="checkboxs">
+                              <input
+                                type="checkbox"
+                                checked={item.delete}
+                                onChange={() =>
+                                  handleCheckboxChange(item.menuId, "delete")
+                                }
+                              />
+                              <span className="checkmarks" />
+                            </label>
+                          </td>
+                          <td>
+                            <label className="checkboxs">
+                              <input
+                                type="checkbox"
+                                checked={item.view}
+                                onChange={() =>
+                                  handleCheckboxChange(item.menuId, "view")
+                                }
+                              />
+                              <span className="checkmarks" />
+                            </label>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
+            <div className="col-lg-12">
+              <div className="btn-addproduct mb-4">
+                <button
+                  type="button"
+                  className="btn btn-cancel me-2"
+                  onClick={() => navigate(-1)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-submit"
+                  disabled={isLoading}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
-    )
-}
+      </div>
+    </>
+  );
+};
 
-export default Permissions
+export default Permissions;

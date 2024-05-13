@@ -197,7 +197,7 @@ const GoBackToPage = (props) => {
         <div className="page-btn">
           <a className="btn btn-secondary" onClick={() => navigate(-1)}>
             <ArrowLeft className="me-2" />
-            {`Back ${props.title}`}
+            {`Go Back ${props.title}`}
           </a>
         </div>
       </li>

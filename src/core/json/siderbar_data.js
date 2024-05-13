@@ -86,6 +86,22 @@ export const SidebarData = [
       },
     ],
   },
+  {
+    label: "Report",
+    submenuOpen: true,
+    showSubRoute: false,
+    submenuHdr: "Report",
+
+    submenuItems: [
+      {
+        label: "Order Status",
+        link: "/order-status-report",
+        icon: <Icon.ShoppingBag />,
+        showSubRoute: false,
+        submenu: false,
+      },
+    ],
+  },
   // {
   //   label: "Inventory",
   //   submenuOpen: true,
@@ -461,6 +477,12 @@ export const SidebarData = [
         icon: <Icon.UserCheck />,
         showSubRoute: false,
       },
+      // {
+      //   label: "User Right",
+      //   link: "/user-right",
+      //   icon: <Icon.UserCheck />,
+      //   showSubRoute: true,
+      // },
       // {
       //   label: "Delete Account Request",
       //   link: "/delete-account",

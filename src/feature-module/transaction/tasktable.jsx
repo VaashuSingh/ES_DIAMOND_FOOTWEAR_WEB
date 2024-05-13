@@ -4,14 +4,14 @@ import { Table, Tag } from "antd";
 import moment from "moment";
 import { toast } from "react-toastify";
 import PropTypes from "prop-types";
-import { apiUrl } from "../../../core/json/api";
-import Loader_2 from "../../loader-2/loader-2";
+import { apiUrl } from "../../core/json/api";
+import Loader_2 from "../loader-2/loader-2";
 import {
   GoBackToPage,
   PageTopHeaderLeft,
   TableDataSearch,
-} from "../../../core/reusable_components/table/tables";
-import Modal_Task_Approvel from "../../../core/modals/transaction/order-accept/approvel-modal";
+} from "../../core/reusable_components/table/tables";
+import Modal_Task_Approvel from "../../core/modals/transaction/order-accept/approvel-modal";
 
 const Order_Task_Table = (props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -131,13 +131,13 @@ const Order_Task_Table = (props) => {
       fixed: "right",
       width: 100,
       render: (_, record, index) => (
-        <td id="accept_table" className="action-table-data">
+        <div id="accept_table" className="action-table-data-new">
           <div className="edit-delete-action">
             <a className="me-2 p-2" onClick={() => handleShowModal(record)}>
               <i data-feather="edit" className="feather-edit" />
             </a>
           </div>
-        </td>
+        </div>
       ),
     },
   ];

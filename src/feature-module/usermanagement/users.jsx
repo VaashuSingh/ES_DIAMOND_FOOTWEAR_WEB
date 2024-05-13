@@ -89,14 +89,8 @@ const Users = () => {
       dataIndex: "actions",
       key: "actions",
       render: (text, record) => (
-        <td className="action-table-data">
+        <div className="action-table-data-new">
           <div className="edit-delete-action">
-            {/* <Link className="me-2 p-2" to="#">
-              <i
-                data-feather="eye"
-                className="feather feather-eye action-eye"
-              />
-            </Link> */}
             <Link
               className="me-2 p-2"
               to="#"
@@ -114,7 +108,7 @@ const Users = () => {
               <i data-feather="trash-2" className="feather-trash-2" />
             </Link>
           </div>
-        </td>
+        </div>
       ),
     },
   ];

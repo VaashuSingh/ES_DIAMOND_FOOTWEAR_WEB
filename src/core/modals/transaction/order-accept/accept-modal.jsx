@@ -173,7 +173,7 @@ const Modal_Accept = ({ show, onHide, onSave, selectItems, modalData }) => {
 
               <div className="col-lg-12">
                 <div className="mb-3 input-blocks">
-                  <label className="form-label">remark</label>
+                  <label className="form-label">Remark</label>
                   <textarea
                     type="text"
                     className="form-control"
@@ -187,7 +187,7 @@ const Modal_Accept = ({ show, onHide, onSave, selectItems, modalData }) => {
                   <p className="red">Maximum 200 Characters</p>
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Responeble Person</label>
+                  <label className="form-label">Responsible Person</label>
                   <input
                     type="text"
                     className="form-control"

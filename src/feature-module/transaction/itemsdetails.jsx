@@ -1,21 +1,21 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
-import Loader_2 from "../../loader-2/loader-2";
+import Loader_2 from "../loader-2/loader-2";
 import {
   GoBackToPage,
   PageTopHeaderLeft,
-} from "../../../core/reusable_components/table/tables";
+} from "../../core/reusable_components/table/tables";
 import { Table, Tag } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
-import { apiUrl } from "../../../core/json/api";
+import { apiUrl } from "../../core/json/api";
 import { toast } from "react-toastify";
-import Modal_Accept from "../../../core/modals/transaction/order-accept/accept-modal";
+import Modal_Accept from "../../core/modals/transaction/order-accept/accept-modal";
 import {
   cancelCallback,
   // confirmationCallback,
   getCurrentUsersDetails,
   showConfirmationAlert,
-} from "../../../core/json/functions";
+} from "../../core/json/functions";
 import moment from "moment";
 
 const ItemsDeatilsShow = () => {
@@ -47,6 +47,10 @@ const ItemsDeatilsShow = () => {
           {text}
         </a>
       ),
+    },
+    {
+      title: "Po No",
+      dataIndex: "poNo",
     },
     {
       title: "Sole Branding",
@@ -81,42 +85,31 @@ const ItemsDeatilsShow = () => {
       title: "Qty.",
       dataIndex: "qty",
       key: "6",
-      // sorter: (a, b) => a.qty.length - b.qty.length,
     },
-    // {
-    //   title: "Challan Qty",
-    //   dataIndex: "clQty",
-    //   key: "4",
-    // },
     {
       title: "Unit",
       dataIndex: "unit",
       key: "7",
-      // sorter: (a, b) => a.unit.length - b.unit.length,
     },
     {
       title: "Alt. Qty. ",
       dataIndex: "altqty",
       key: "8",
-      // sorter: (a, b) => a.altqty.length - b.altqty.length,
     },
     {
       title: "Price",
       dataIndex: "price",
       key: "9",
-      // sorter: (a, b) => a.price.length - b.price.length,
     },
     {
       title: "MRP",
       dataIndex: "mrp",
       key: "10",
-      // sorter: (a, b) => a.mrp.length - b.mrp.length,
     },
     {
       title: "Amount",
       dataIndex: "amount",
       key: "11",
-      // sorter: (a, b) => a.amount.lenght - b.amount.lenght,
     },
     {
       title: "Status",
@@ -132,7 +125,7 @@ const ItemsDeatilsShow = () => {
       title: "Action",
       dataIndex: "action",
       render: (_, record, index) => (
-        <td id="accept_table" className="action-table-data">
+        <div className="action-table-data-new">
           <div className="edit-delete-action">
             <a
               className="me-2 p-2"
@@ -141,7 +134,7 @@ const ItemsDeatilsShow = () => {
               <i data-feather="edit" className="feather-edit" />
             </a>
           </div>
-        </td>
+        </div>
       ),
     },
   ];
@@ -165,8 +158,8 @@ const ItemsDeatilsShow = () => {
           itemCode: item.itemCode,
           itemname: item.itemName,
           mname1: item.mName1,
-          mname2: item.mName1,
-          mname3: item.mName1,
+          mname2: item.mName2,
+          mname3: item.mName3,
           mCode1: item.mCode1,
           mCode2: item.mCode2,
           mCode3: item.mCode3,

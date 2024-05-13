@@ -8,17 +8,14 @@ import { all_routes } from "../../Router/all_routes";
 import logo2 from "./../../core/assets/img/logo2.png";
 import logo3 from "./../../core/assets/img/logo3.png";
 import logo4 from "./../../core/assets/img/logo4.png";
+import { getCurrentUsers, logout } from "../../core/json/functions";
 
 const Header = () => {
   const route = all_routes;
   const [toggle, SetToggle] = useState(false);
-  const userdata = JSON.parse(sessionStorage.getItem("users"));
+  const userdata = getCurrentUsers();
 
-  const handleLogOut = () => {
-    // sessionStorage.removeItem("token");
-    sessionStorage.clear();
-    // window.location.reload();
-  };
+  // console.log("userdata", userdata);
 
   const isElementVisible = (element) => {
     return element.offsetWidth > 0 || element.offsetHeight > 0;
@@ -645,15 +642,15 @@ const Header = () => {
                 <Link className="dropdown-item" to={route.profile}>
                   <i className="me-2" data-feather="user" /> My Profile
                 </Link>
-                <Link className="dropdown-item" to={route.generalsettings}>
+                {/* <Link className="dropdown-item" to={route.generalsettings}>
                   <i className="me-2" data-feather="settings" />
                   Settings
-                </Link>
+                </Link> */}
                 <hr className="m-0" />
                 <Link
                   className="dropdown-item logout pb-0"
                   to="/signin"
-                  onClick={handleLogOut}
+                  onClick={logout}
                 >
                   <ImageWithBasePath
                     src="assets/img/icons/log-out.svg"

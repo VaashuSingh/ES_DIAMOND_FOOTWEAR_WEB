@@ -1,7 +1,66 @@
 input[type="text"][disabled] {
-    color: red;
- }
+  color: red;
+}
 
- :where(.css-dev-only-do-not-override-1b0bdye).ant-picker-dropdown {
-    z-index: 2000 !important;
-  }
+:where(.css-dev-only-do-not-override-1b0bdye).ant-picker-dropdown {
+  z-index: 2000 !important;
+}
+
+table {
+  tbody {
+      div{
+         &.action-table-data-new {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            padding: 0 !important;
+            a {
+              height: 31px;
+              width: 31px;
+              border: 1px solid rgba(145, 158, 171, 0.3);
+              background-color: $white;
+              border-radius: 8px;
+              display: -webkit-box;
+              display: -ms-flexbox;
+              display: flex;
+              align-items: center;
+              -webkit-box-align: center;
+              -ms-flex-align: center;
+              justify-content: center;
+              -webkit-justify-content: center;
+              -ms-flex-pack: center;
+              padding: 8px;
+              .feather-edit {
+                color: $blue;
+                width: 14px;
+                height: 14px;
+              }
+              .action-edit {
+                color: $text-color;
+                width: 14px;
+                height: 14px;
+              }
+              .feather-trash-2 {
+                color: $danger;
+                width: 14px;
+                height: 14px;
+              }
+              .feather-eye {
+                width: 14px;
+                height: 14px;
+              }
+              .action-download {
+                color: $blue;
+                width: 14px;
+                height: 14px;
+              }
+              .action-eye {
+                color: $secondary;
+                width: 14px;
+                height: 14px;
+              }
+            }
+         }
+      }
+   }
+}

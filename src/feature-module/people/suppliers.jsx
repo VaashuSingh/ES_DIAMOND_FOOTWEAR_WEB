@@ -53,7 +53,7 @@ const Suppliers = () => {
       render: (text, record) => (
         <span className="productimgname">
           <Link to="#" className="product-img stock-img">
-            <ImageWithBasePath alt="" src={record.image} />
+            <ImageWithBasePath alt="img" src={record.image} />
           </Link>
           <Link to="#">{text}</Link>
         </span>

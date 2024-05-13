@@ -79,7 +79,7 @@ const SubCategories = () => {
             render: (text, record) => (
                 <span className="productimgname">
                     <Link to="#" className="product-img stock-img">
-                        <ImageWithBasePath alt="" src={record.img} />
+                        <ImageWithBasePath alt="img" src={record.img} />
                     </Link>
                    
                 </span>

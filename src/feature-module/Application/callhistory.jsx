@@ -51,7 +51,7 @@ const Callhistory = () => {
       render: (text, record) => (
         <span className="productimgname">
           <Link to="#" className="product-img stock-img">
-            <ImageWithBasePath alt="" src={record.image_url} />
+            <ImageWithBasePath alt="img" src={record.image_url} />
           </Link>
           <Link to="#">{text}</Link>
         </span>

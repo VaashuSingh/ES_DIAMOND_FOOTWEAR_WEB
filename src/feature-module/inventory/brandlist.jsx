@@ -82,7 +82,7 @@ const BrandList = () => {
             render: (text, record) => (
                 <span className="productimgname">
                     <Link to="#" className="product-img stock-img">
-                        <ImageWithBasePath alt="" src={record.logo} />
+                        <ImageWithBasePath alt="img" src={record.logo} />
                     </Link>
                 </span>
             ),

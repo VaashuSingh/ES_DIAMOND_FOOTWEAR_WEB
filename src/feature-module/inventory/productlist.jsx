@@ -73,7 +73,7 @@ const ProductList = () => {
       render: (text, record) => (
         <span className="productimgname">
           <Link to="/profile" className="product-img stock-img">
-            <ImageWithBasePath alt="" src={record.productImage} />
+            <ImageWithBasePath alt="img" src={record.productImage} />
           </Link>
           <Link to="/profile">{text}</Link>
         </span>
@@ -119,7 +119,7 @@ const ProductList = () => {
       render: (text, record) => (
         <span className="userimgname">
           <Link to="/profile" className="product-img">
-            <ImageWithBasePath alt="" src={record.img} />
+            <ImageWithBasePath alt="img" src={record.img} />
           </Link>
           <Link to="/profile">{text}</Link>
         </span>

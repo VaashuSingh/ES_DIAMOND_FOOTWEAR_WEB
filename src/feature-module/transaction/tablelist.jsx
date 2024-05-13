@@ -1,15 +1,15 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
 import { Link, Route, useNavigate } from "react-router-dom";
-import ImageWithBasePath from "../../../core/img/imagewithbasebath";
+import ImageWithBasePath from "../../core/img/imagewithbasebath";
 import { Filter, StopCircle, User } from "react-feather";
 import Select from "react-select";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import Table from "../../../core/pagination/datatable";
-import { apiUrl } from "../../../core/json/api";
+import Table from "../../core/pagination/datatable";
+import { apiUrl } from "../../core/json/api";
 import { toast } from "react-toastify";
-import Loader_2 from "../../loader-2/loader-2";
+import Loader_2 from "../loader-2/loader-2";
 import { DatePicker } from "antd";
 import moment from "moment/moment";
 import {
@@ -18,8 +18,8 @@ import {
   PageTopRight,
   TableHeadButton,
   renderActions,
-} from "../../../core/reusable_components/table/tables";
-import { all_routes } from "../../../Router/all_routes";
+} from "../../core/reusable_components/table/tables";
+import { all_routes } from "../../Router/all_routes";
 
 const OrdersReceivedList = () => {
   const [loading, setLoading] = useState(false);
@@ -134,9 +134,8 @@ const OrdersReceivedList = () => {
       title: "Actions",
       dataIndex: "actions",
       key: "actions",
-      // render: (_, record) => (tableData.length ? renderActions(record) : ""),
       render: (text, record) => (
-        <td className="action-table-data">
+        <div className="action-table-data-new">
           <div className="edit-delete-action">
             <a
               className="me-2 p-2"
@@ -170,7 +169,7 @@ const OrdersReceivedList = () => {
               />
             </Link> */}
           </div>
-        </td>
+        </div>
       ),
     },
   ];
@@ -303,34 +302,6 @@ const OrdersReceivedList = () => {
     }
   };
 
-  const MySwal = withReactContent(Swal);
-
-  const showConfirmationAlert = () => {
-    MySwal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      showCancelButton: true,
-      confirmButtonColor: "#00ff00",
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonColor: "#ff0000",
-      cancelButtonText: "Cancel",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        MySwal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          className: "btn btn-success",
-          confirmButtonText: "OK",
-          customClass: {
-            confirmButton: "btn btn-success",
-          },
-        });
-      } else {
-        MySwal.close();
-      }
-    });
-  };
-
   //Searching Input Box In Table
   const handleSearch = (value) => {
     const filteredData = tableData.filter((o) =>
@@ -349,8 +320,8 @@ const OrdersReceivedList = () => {
           <div className="page-header">
             {/* Table top header component */}
             <PageTopHeaderLeft
-              title={`Order Accept`}
-              subTitle={`Order Accept Busy Voucher Details`}
+              title={`Order Acception`}
+              subTitle={`Busy Voucher Details`}
             />
             {/* <PageTopRight onRefresh={handleRefresh} /> */}
           </div>
@@ -368,6 +339,7 @@ const OrdersReceivedList = () => {
                       isFilterVisible ? "setclose" : ""
                     }`}
                     id="filter_search"
+                    onClick={toggleFilterVisibility}
                   >
                     <Filter
                       className="filter-icon"
@@ -395,7 +367,7 @@ const OrdersReceivedList = () => {
                       <div className="row">
                         <div className="col-md-6 col-sm-6 col-12">
                           <div className="input-blocks">
-                            <User className="info-img" />
+                            {/* <User className="info-img" /> */}
                             <Select
                               className="select"
                               options={seriesOpt}
@@ -416,7 +388,7 @@ const OrdersReceivedList = () => {
                         </div>
                         <div className="col-md-6 col-sm-6 col-12">
                           <div className="input-blocks">
-                            <StopCircle className="info-img" />
+                            {/* <StopCircle className="info-img" /> */}
                             <Select
                               className="select"
                               value={

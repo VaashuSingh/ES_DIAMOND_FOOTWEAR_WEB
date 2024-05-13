@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { toast } from "react-toastify";
 import Select from "react-select";
-import { apiUrl } from "../../../json/api";
+import { apiUrl, dateFormat, dateFormat1 } from "../../../json/api";
 import Loader_2 from "../../../../feature-module/loader-2/loader-2";
+import { DatePicker } from "antd";
+import dayjs from "dayjs";
+import moment from "moment";
 
 const Modal_Task_Approvel = ({ show, onHide, record, onSubmitSucces }) => {
   const [input, setInput] = useState({
@@ -14,10 +17,11 @@ const Modal_Task_Approvel = ({ show, onHide, record, onSubmitSucces }) => {
     status: 0,
     remark: "",
     users: "",
+    createdOn: null,
   });
   const [isLoading, setisLoading] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
-  // console.log("record", record);
+  const [selectedDates, setSelectedDates] = useState(null);
 
   const options = [
     { value: 1, label: "Done" },
@@ -56,6 +60,7 @@ const Modal_Task_Approvel = ({ show, onHide, record, onSubmitSucces }) => {
       users: "",
     });
     setSelectedOption(null);
+    setSelectedDates(null);
   };
 
   const handle_from_data = () => {
@@ -67,6 +72,8 @@ const Modal_Task_Approvel = ({ show, onHide, record, onSubmitSucces }) => {
       taskCode: parseInt(record?.taskCode),
       taskId: parseInt(record?.taskId),
       users: users?.name,
+      createdOn:
+        moment(input.createdOn, "DD-MM-YYYY").format(dateFormat1) || null,
     };
     return formdata;
   };
@@ -85,7 +92,7 @@ const Modal_Task_Approvel = ({ show, onHide, record, onSubmitSucces }) => {
         body: JSON.stringify(handle_from_data()),
       });
       const result = await resp.json();
-      console.log("result", result);
+      // console.log("result", result);
       toast.success(result.msg);
       if (result.status === 1) {
         handle_form_clear();
@@ -99,15 +106,18 @@ const Modal_Task_Approvel = ({ show, onHide, record, onSubmitSucces }) => {
     }
   };
 
-  const handle_get_data = async (url) => {
+  const get_model_data = async (url) => {
     setisLoading(true);
     try {
       const resp = await fetch(url);
       const result = await resp.json();
       // console.log("result", result);
       if (result.status === 1) {
-        setInput({ remark: result.data[0].remark });
-        // console.log("result.data", result.data);
+        setInput({
+          remark: result.data[0].remark,
+          createdOn: result.data[0].date,
+        });
+        setSelectedDates(result.data[0].date);
         setSelectedOption({
           value: result.data[0].action,
           label:
@@ -119,6 +129,8 @@ const Modal_Task_Approvel = ({ show, onHide, record, onSubmitSucces }) => {
               ? "Cancel"
               : "",
         });
+      } else {
+        handle_form_clear();
       }
     } catch (err) {
       toast.error(err.message);
@@ -129,11 +141,24 @@ const Modal_Task_Approvel = ({ show, onHide, record, onSubmitSucces }) => {
 
   useEffect(() => {
     handle_form_clear();
-    if (record && record !== null && record.status === 2) {
+    if (record && record !== null && record.status === 0) {
+      setSelectedDates(
+        moment(record?.expandedData?.taskdate, dateFormat1).format(dateFormat)
+      );
+    } else if (record && record !== null && record.status === 2) {
       const api = `${apiUrl}/GetOrderApprovelItemsHoldDetails/${record?.taskId}/${record?.taskCode}/${record?.vchCode}/${record?.itemCode}`;
-      handle_get_data(api);
+      get_model_data(api);
     }
   }, [record]);
+
+  const handleSelectedDateChange = (date, dateString) => {
+    setSelectedDates(date);
+
+    setInput({
+      ...input,
+      ["createdOn"]: dateString || null,
+    });
+  };
 
   return (
     <Modal
@@ -142,6 +167,7 @@ const Modal_Task_Approvel = ({ show, onHide, record, onSubmitSucces }) => {
       size="md"
       aria-labelledby="contained-modal-title-vcenter"
       centered
+      style={{ zIndex: 1050 }}
     >
       <>
         {isLoading && <Loader_2 />}
@@ -168,7 +194,6 @@ const Modal_Task_Approvel = ({ show, onHide, record, onSubmitSucces }) => {
                         required
                       />
                     </div>
-
                     <div className="mb-3 input-blocks">
                       <label className="form-label">Remark</label>
                       <textarea
@@ -184,7 +209,25 @@ const Modal_Task_Approvel = ({ show, onHide, record, onSubmitSucces }) => {
                       <p className="red">Maximum 200 Characters</p>
                     </div>
                   </div>
-
+                  <div className="mb-3">
+                    <label className="form-label">Estimated Date</label>
+                    <div className="input-groupicon calender-input">
+                      <DatePicker
+                        value={
+                          selectedDates
+                            ? dayjs(selectedDates, dateFormat)
+                            : null
+                        }
+                        selected={selectedDates}
+                        onChange={(date, dateString) =>
+                          handleSelectedDateChange(date, dateString)
+                        }
+                        className="form-control filterdatepicker"
+                        format={dateFormat}
+                        placeholder="Date"
+                      />
+                    </div>
+                  </div>
                   <div className="modal-footer-btn">
                     <button
                       type="button"

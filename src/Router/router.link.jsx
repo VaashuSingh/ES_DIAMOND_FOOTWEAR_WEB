@@ -195,9 +195,15 @@ import WareHouses from "../core/modals/peoples/warehouses";
 import Coupons from "../feature-module/coupons/coupons";
 
 //Transaction
-import AcceptList from "../feature-module/transaction/order-accept/tablelist";
-import ItemsDeatilsShow from "../feature-module/transaction/order-accept/itemsdetails";
-import Order_Order_Task_Table from "../feature-module/transaction/order-accept/tasktable";
+import AcceptList from "../feature-module/transaction/tablelist";
+import ItemsDeatilsShow from "../feature-module/transaction/itemsdetails";
+import Order_Order_Task_Table from "../feature-module/transaction/tasktable";
+
+//Report
+import Order_Status_Report from "../feature-module/Reports/transactions/orderstatusreport";
+
+//Users
+import UsersRightList from "../feature-module/usermanagement/userrightlist";
 import { all_routes } from "./all_routes";
 
 export const publicRoutes = [
@@ -1439,6 +1445,13 @@ export const publicRoutes = [
     path: routes.ordacceptdeliprod,
     name: "ordacceptmrptable",
     element: <Order_Order_Task_Table identity={4} />,
+    route: Route,
+  },
+  {
+    id: 123,
+    path: routes.orderstatusreport,
+    name: "orderstatusreport",
+    element: <Order_Status_Report />,
     route: Route,
   },
 ];

@@ -10,6 +10,9 @@ export const all_routes = {
   ordacceptprodtable: "/order-accept-production",
   ordacceptdeliprod: "/order-accept-delivery",
 
+  //Reports
+  orderstatusreport: "/order-status-report",
+
   productlist: "/product-list",
   addproduct: "/add-product",
   salesdashboard: "/sales-dashboard",
