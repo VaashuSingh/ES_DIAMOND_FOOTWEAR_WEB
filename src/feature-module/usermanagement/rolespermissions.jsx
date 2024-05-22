@@ -14,6 +14,7 @@ import {
   PageTopHeaderLeft,
 } from "../../core/reusable_components/table/tables";
 import { all_routes } from "../../Router/all_routes";
+import { searchingdata } from "../../core/json/functions";
 
 const RolesPermissions = () => {
   const route = all_routes;
@@ -170,18 +171,8 @@ const RolesPermissions = () => {
     });
   };
 
-  //Searching Input Box In Table
-  const onSearchHandler = (value) => {
-    const filteredData = tabledata.filter((o) =>
-      Object.keys(o).some((k) =>
-        String(o[k]).toLowerCase().includes(value.toLowerCase())
-      )
-    );
-    setSearchTable(filteredData);
-  };
-
   return (
-    <div>
+    <>
       {loading && <Loader_2 />}
       <div className="page-wrapper">
         <div className="content">
@@ -202,7 +193,9 @@ const RolesPermissions = () => {
           <div className="card table-list-card">
             <div className="card-body">
               <div className="table-top">
-                <TableDataSearch onSearch={onSearchHandler} />
+                <TableDataSearch
+                  onSearch={(e) => setSearchTable(searchingdata(e, tabledata))}
+                />
               </div>
               {/* /Filter */}
               <div className="table-responsive">
@@ -222,7 +215,7 @@ const RolesPermissions = () => {
         record={selectedRecord}
         onSubmitSuccess={handleRefresh}
       />
-    </div>
+    </>
   );
 };
 

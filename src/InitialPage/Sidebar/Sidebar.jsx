@@ -1,16 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Scrollbars from "react-custom-scrollbars-2";
 // import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-import { SidebarData } from "../../core/json/siderbar_data";
+// import { SidebarData } from "../../core/json/siderbar_data";
 import HorizontalSidebar from "./horizontalSidebar";
 import CollapsedSidebar from "./collapsedSidebar";
+import { toast } from "react-toastify";
+import { apiUrl } from "../../core/json/api";
+import { getCurrentUsers } from "../../core/json/functions";
+import Loader_2 from "../../feature-module/loader-2/loader-2";
+import { SidebarData, iconMapping } from "../../core/json/siderbar_data";
 
 const Sidebar = () => {
   // const SidebarData = useSelector((state) => state.sidebar_data);
   const Location = useLocation();
   const [subOpen, setSubopen] = useState("");
   const [subsidebar, setSubsidebar] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [sidebarData, setSidebarData] = useState([]);
 
   const toggleSidebar = (title) => {
     if (title == subOpen) {
@@ -28,9 +35,31 @@ const Sidebar = () => {
     }
   };
 
+  useEffect(() => {
+    setIsLoading(true);
+    const currentuser = getCurrentUsers();
+    getSidebarData(`${apiUrl}/GetUserMenusResponse/${currentuser?.userId}`);
+  }, []);
+
+  console.log("sidebarData", SidebarData);
+
+  const getSidebarData = async (url) => {
+    try {
+      const resp = await fetch(url);
+      const json = await resp.json();
+      console.log("json", json);
+      if (json.status === 1) setSidebarData(json.data);
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div>
       <div className="sidebar" id="sidebar">
+        {isLoading && <Loader_2 />}
         <Scrollbars>
           <div className="sidebar-inner slimscroll">
             <div id="sidebar-menu" className="sidebar-menu">
@@ -70,6 +99,7 @@ const Sidebar = () => {
                             `}
                               >
                                 {/* <Grid /> */}
+                                {/* {iconMapping[title?.icon.replace("<Icon.", "").replace(" />", "")] || null} */}
                                 {title?.icon}
                                 <span>{title?.label}</span>
                                 <span

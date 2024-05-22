@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  GoBackToPage,
   PageTopHeaderLeft,
   TableDataSearch,
 } from "../../core/reusable_components/table/tables";
@@ -7,9 +8,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loader_2 from "../loader-2/loader-2";
 import { apiUrl } from "../../core/json/api";
+import { searchingHandler } from "../../core/json/functions";
 
 const Permissions = () => {
   const navigate = useNavigate();
+  const location = useLocation()
+  console.log('location',location)
   const [isLoading, setIsLoading] = useState(false);
   const [permissionData, setPermissionData] = useState([]);
   const { state } = useLocation();
@@ -126,16 +130,12 @@ const Permissions = () => {
               title={`Permission`}
               subTitle={`Manage your permissions`}
             />
+            <GoBackToPage title={"To Role"} />
           </div>
           <form onSubmit={handleSubmit}>
             <div className="card table-list-card">
               <div className="card-body">
-                <div className="table-top">
-                  <div className="search-set">
-                    <TableDataSearch onSearch={" "} />
-                  </div>
-                </div>
-                <div className="table-responsive">
+                <div className="table-responsive" style={{ borderTop: "none" }}>
                   <table className="table datanew">
                     <thead>
                       <tr>

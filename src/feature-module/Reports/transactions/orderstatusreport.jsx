@@ -11,8 +11,10 @@ import { DatePicker, Tag } from "antd";
 import Select from "react-select";
 import Table from "../../../core/pagination/datatable";
 import { toast } from "react-toastify";
-import { apiUrl } from "../../../core/json/api";
+import { apiUrl, dateFormat } from "../../../core/json/api";
 import Loader_2 from "../../loader-2/loader-2";
+import { searchingdata } from "../../../core/json/functions";
+import moment from "moment";
 const Order_Status_Report = () => {
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +23,12 @@ const Order_Status_Report = () => {
   const [partyOpts, setPartyOpts] = useState([]);
   const [itemOpts, setItemOpts] = useState([]);
   const [orderNoOpts, setOrderNoOpts] = useState([]);
-  const [selectedisFilterVal, setSelectedisFilterVal] = useState({
+  const [selectedDate, setSelectedDate] = useState({
+    startDate: "",
+    endDate: "",
+  });
+
+  const [selectedisFilter, setSelectedisFilter] = useState({
     party: 0,
     item: 0,
     orderno: "",
@@ -38,6 +45,7 @@ const Order_Status_Report = () => {
 
   function toggleFilterVisibility() {
     setIsFilterVisible(!isFilterVisible);
+    getTableData(`${apiUrl}/GetOrderStatusReport`);
   }
 
   const columns = [
@@ -117,28 +125,35 @@ const Order_Status_Report = () => {
       const result = await resp.json();
       //   console.log("result", result);
       if (result.status === 1) {
-        const tabledatanew = result.data.map((item, index) => ({
-          vchcode: item.vchCode,
-          taskcode: item.taskCode,
-          orderdate: item.vchDate,
-          orderno: item.vchNo,
-          party: item.accName,
-          itemname: item.itemName,
-          color: item.color,
-          size: item.size,
-          qty: item.qty,
-          altqty: item.altQty,
-          mrp: item.mrp,
-          status: item.status,
-          person: item.person,
-        }));
-        setTableData(tabledatanew);
+        setTableData(handle_set_data_table(result));
+      } else {
+        toast.warning(result.msg);
+        setTableData([]);
       }
     } catch (err) {
       toast.error(err.message);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handle_set_data_table = (result) => {
+    const tabledatanew = result.data.map((item, index) => ({
+      vchcode: item.vchCode,
+      taskcode: item.taskCode,
+      orderdate: item.vchDate,
+      orderno: item.vchNo,
+      party: item.accName,
+      itemname: item.itemName,
+      color: item.color,
+      size: item.size,
+      qty: item.qty,
+      altqty: item.altQty,
+      mrp: item.mrp,
+      status: item.status,
+      person: item.person,
+    }));
+    return tabledatanew;
   };
 
   const getBusyMasterList = async (url, trantype) => {
@@ -173,50 +188,73 @@ const Order_Status_Report = () => {
 
   const handleSelectChange = (selected, event) => {
     if (event.name === "orderno") {
-      setSelectedisFilterVal({
-        ...selectedisFilterVal,
-        [event.name]: selected.label,
+      setSelectedisFilter({
+        ...selectedisFilter,
+        [event.name]: selected.value !== 0 ? selected.label : "",
       });
     } else {
-      setSelectedisFilterVal({
-        ...selectedisFilterVal,
+      setSelectedisFilter({
+        ...selectedisFilter,
         [event.name]: selected.value,
       });
     }
   };
 
-  // console.log("selectedisFilterVal", selectedisFilterVal);
+  const handleDeteChange = (selected, datestring, event) => {
+    setSelectedDate({ ...selectedDate, [event]: selected });
+    setSelectedisFilter({
+      ...selectedisFilter,
+      [event]: selected
+        ? moment(datestring, "YYYY-MM-DD").format("DD-MMM-YYYY")
+        : "",
+    });
+  };
 
   const ValidationApplied = (SelectedFilter) => {
     if (
       (SelectedFilter.startDate && SelectedFilter.endDate === "") ||
       (SelectedFilter.startDate === "" && SelectedFilter.endDate)
     ) {
-      throw new Error("Please select a valid Date Range");
-    } else if (
-      !SelectedFilter.series &&
-      !SelectedFilter.party &&
-      !SelectedFilter.startDate &&
-      !SelectedFilter.endDate
-    ) {
-      throw new Error("Please select a valid Filter Range");
+      throw new Error("Please select a valid date range");
     } else {
       return true;
     }
   };
 
-  const handleSearching = async () => {
+  const generated_api_url = () => {
+    const { party, item, orderno, status, startDate, endDate } =
+      selectedisFilter;
+    const apiUrl1 = `${apiUrl}/GetOrderStatusReport?AccCode=${encodeURIComponent(
+      party
+    )}&ItemCode=${encodeURIComponent(item)}&OrderNo=${encodeURIComponent(
+      orderno
+    )}&Status=${encodeURIComponent(status)}&StartDate=${encodeURIComponent(
+      startDate
+    )}&EndDate=${encodeURIComponent(endDate)}`;
+    console.log("apiUrl1", apiUrl1);
+    return apiUrl1;
+  };
+
+  const handle_filtered_Data = async () => {
     setIsLoading(true);
-    if (!ValidationApplied(selectedisFilterVal)) return;
     try {
-      const resp = "";
+      if (!ValidationApplied(selectedisFilter)) return;
+      const resp = await fetch(generated_api_url());
+      const json = await resp.json();
+      console.log("json", json);
+      if (json.status === 1) {
+        setTableData(handle_set_data_table(json));
+      } else {
+        toast.warning(json.msg);
+        setTableData([]);
+      }
     } catch (err) {
       toast.error(err.message);
     } finally {
       setIsLoading(false);
     }
   };
-  
+
   return (
     <>
       {isLoading && <Loader_2 />}
@@ -234,7 +272,11 @@ const Order_Status_Report = () => {
               <div className="table-top">
                 {/* searching Table Data */}
                 <div className="search-set">
-                  <TableDataSearch onSearch={" "} />
+                  <TableDataSearch
+                    onSearch={(e) =>
+                      setTableDataSearch(searchingdata(e, tableData))
+                    }
+                  />
                 </div>
                 {/* searching Table Data */}
                 {/* Filter Icon */}
@@ -277,10 +319,10 @@ const Order_Status_Report = () => {
                               className="select"
                               name="party"
                               options={partyOpts}
-                              placeholder="Choose Party"
                               onChange={(e, name) =>
                                 handleSelectChange(e, name)
                               }
+                              placeholder="Choose Party"
                             />
                           </div>
                         </div>
@@ -290,11 +332,11 @@ const Order_Status_Report = () => {
                             <Select
                               className="select"
                               name="item"
-                              placeholder="Choose Items"
                               options={itemOpts}
                               onChange={(e, name) =>
                                 handleSelectChange(e, name)
                               }
+                              placeholder="Choose Items"
                             />
                           </div>
                         </div>
@@ -304,11 +346,11 @@ const Order_Status_Report = () => {
                             <Select
                               className="select"
                               name="orderno"
-                              placeholder="Choose Order No"
                               options={orderNoOpts}
                               onChange={(e, name) =>
                                 handleSelectChange(e, name)
                               }
+                              placeholder="Choose Order No"
                             />
                           </div>
                         </div>
@@ -319,10 +361,10 @@ const Order_Status_Report = () => {
                               className="select"
                               name="status"
                               options={statusOpt}
-                              placeholder="Choose Status"
                               onChange={(e, name) =>
                                 handleSelectChange(e, name)
                               }
+                              placeholder="Choose Status"
                             />
                           </div>
                         </div>
@@ -335,7 +377,12 @@ const Order_Status_Report = () => {
                             <div className="input-groupicon">
                               <DatePicker
                                 type="date"
-                                className="filterdatepicker"
+                                className=" form-control filterdatepicker"
+                                selected={selectedDate.startDate}
+                                onChange={(e, datestring) =>
+                                  handleDeteChange(e, datestring, "startDate")
+                                }
+                                dateFormat={dateFormat}
                                 placeholder="Form Date"
                               />
                             </div>
@@ -346,8 +393,12 @@ const Order_Status_Report = () => {
                             <div className="input-groupicon">
                               <DatePicker
                                 type="date"
-                                className="filterdatepicker"
-                                dateFormat="dd-MM-yyyy"
+                                className="form-control filterdatepicker"
+                                selected={selectedDate.endDate}
+                                onChange={(e, datestring) =>
+                                  handleDeteChange(e, datestring, "endDate")
+                                }
+                                dateFormat={dateFormat}
                                 placeholder="To Date"
                               />
                             </div>
@@ -357,7 +408,7 @@ const Order_Status_Report = () => {
                           <div className="input-blocks">
                             <button
                               className="btn btn-filters ms-auto"
-                              onClick={"applyFilter"}
+                              onClick={handle_filtered_Data}
                             >
                               {" "}
                               <i
@@ -376,7 +427,10 @@ const Order_Status_Report = () => {
               </div>
               {/* Table */}
               <div className="table-responsive">
-                <Table columns={columns} dataSource={tableData} />
+                <Table
+                  columns={columns}
+                  dataSource={tableDataSearch || tableData}
+                />
               </div>
             </div>
           </div>

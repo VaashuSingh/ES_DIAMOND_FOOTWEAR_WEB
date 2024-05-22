@@ -62,3 +62,29 @@ export const showConfirmationAlert = (
 export function cancelCallback() {
   MySwal.close();
 }
+
+//Searching Input Box In Table
+export const searchingdata = (value, data) => {
+  console.log("value", value);
+  console.log("data", data);
+
+  const filteredData = data?.filter((o) =>
+    Object.keys(o).some((k) =>
+      String(o[k]).toLowerCase().includes(value.toLowerCase())
+    )
+  );
+  return filteredData;
+};
+
+// const transformJSX = (jsx) => {
+//   const code = Babel.transform(jsx, {
+//     presets: ["react"],
+//   }).code;
+//   return eval(code);
+// };
+
+// export const DynamicIcon = (jsxString) => {
+//   const iconElement = transformJSX(jsxString);
+
+//   return iconElement;
+// };

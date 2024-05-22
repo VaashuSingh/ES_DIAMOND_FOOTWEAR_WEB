@@ -102,6 +102,7 @@ export const SidebarData = [
       },
     ],
   },
+
   // {
   //   label: "Inventory",
   //   submenuOpen: true,
@@ -1050,3 +1051,13 @@ export const SidebarData = [
   //   ],
   // },
 ];
+
+export const iconMapping = {
+  Grid: <Icon.Grid />,
+  Box: <Icon.Box />,
+  Layers: <Icon.Layers />,
+  Package: <Icon.Package />,
+  ShoppingBag: <Icon.ShoppingBag />,
+  ShoppingCart: <Icon.ShoppingCart />,
+  UserCheck: <Icon.UserCheck />,
+};
