@@ -1,12 +1,11 @@
 /* eslint-disable react/prop-types */
 import { PlusCircle } from "feather-icons-react/build/IconComponents";
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Select from "react-select";
 import { apiUrl } from "../../json/api";
 import Loader_2 from "../../../feature-module/loader-2/loader-2";
 import X from "feather-icons-react/build/IconComponents/X";
-import ImageWithBasePath from "../../img/imagewithbasebath";
 import { toast } from "react-toastify";
 
 const AddUsers = ({ mode, record, onSubmitSuccess }) => {
@@ -21,7 +20,7 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
     base64: "",
     deactivate: 0,
   });
-  const location = useLocation();
+
   const [passwordinput, setPasswordInput] = useState({
     password: "",
     confirmPassword: "",
@@ -32,14 +31,15 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
   const [showConfirmPassword, setConfirmPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
   useEffect(() => {
     if (mode === "add") {
       clearInputField();
-      GetOnRoleMaster(`${apiUrl}/GetUserRoleMasters/${1}`);
+      GetRoleMaster(`${apiUrl}/GetUserRoleMasters/${1}`);
     } else if (mode === "modify" && record) {
       clearInputField();
-      GetOnRoleMaster(`${apiUrl}/GetUserRoleMasters/${1}`);
+      GetRoleMaster(`${apiUrl}/GetUserRoleMasters/${1}`);
       getformData(`${apiUrl}/GetUserMasterDetails/${1}?userId=${record.id}`);
     }
   }, [mode, record]);
@@ -48,29 +48,27 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
     try {
       setIsLoading(true);
       const resp = await fetch(url);
-      const json = await resp.json();
-      const result = json.data;
-      // console.log("result", result);
-      //set form fields
+      const result = await resp.json();
       setFormData({
-        userId: result[0].userId,
-        username: result[0].username,
-        mobileNo: result[0].mobileNo,
-        emailId: result[0].emailId,
-        pwd: result[0].pwd,
-        desc: result[0].desc,
-        roleId: result[0].roleId,
-        base64: result[0].image,
-        deactivate: parseInt(result[0].active === 1 ? 0 : 1),
+        userId: result?.data[0].userId,
+        username: result?.data[0].username,
+        mobileNo: result?.data[0].mobileNo,
+        emailId: result?.data[0].emailId,
+        pwd: result?.data[0].pwd,
+        desc: result?.data[0].desc,
+        roleId: result?.data[0].roleId,
+        base64: result?.data[0].image,
+        deactivate: parseInt(result?.data[0].active === 1 ? 0 : 1),
       });
       setPasswordInput({
-        password: result[0].pwd,
-        confirmPassword: result[0].pwd,
+        password: result?.data[0].pwd,
+        confirmPassword: result?.data[0].pwd,
       });
       setSelectedOption({
-        value: result[0].roleId,
-        label: result[0].roleName,
+        value: result?.data[0].roleId,
+        label: result?.data[0].roleName,
       });
+      setIsSuperAdmin(parseInt(result?.data[0].superAdmin) === 1 ? true : false);
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -78,16 +76,19 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
     }
   };
 
-  const GetOnRoleMaster = async (url) => {
+  const GetRoleMaster = async (url) => {
     try {
       setIsLoading(true);
       const resp = await fetch(url);
-      const { data } = await resp.json();
-      const lidtdata = data.map((item) => ({
-        value: item.roleId,
-        label: item.name,
-      }));
-      setRoleOpt(lidtdata);
+      const json = await resp.json();
+      // console.log("json", json);
+      const filteredData = json.data
+        .filter((item) => item.admin === 0)
+        .map((item) => ({
+          value: item.roleId,
+          label: item.name,
+        }));
+      setRoleOpt(filteredData);
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -150,7 +151,7 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
     setFormData((prevFormData) => ({ ...prevFormData, base64: "" }));
   };
 
-  const onSubmitForm = async (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     try {
@@ -191,8 +192,8 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
       deactivate: 0,
     });
     setPasswordInput({ password: "", confirmPassword: "", errorMsg: "" });
-    // setRoleOpt([]);
     setSelectedOption(null);
+    setIsSuperAdmin(false);
   };
 
   const handleTogglePassword = () => {
@@ -226,7 +227,7 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
                   </button>
                 </div>
                 <div className="modal-body custom-modal-body">
-                  <form action="#" onSubmit={onSubmitForm}>
+                  <form action="#" onSubmit={handleFormSubmit}>
                     <div className="row">
                       <div className="col-lg-12">
                         <div className="new-employee-field">
@@ -234,7 +235,7 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
                           <div className="add-choosen ">
                             <div className="profile-pic-upload mb-2">
                               <div className="phone-img1 profile-pic">
-                                {formData.base64.length == 0 ? (
+                                {formData.base64.length === 0 ? (
                                   <span>
                                     <PlusCircle className="plus-down-add" />
                                     Profile Photo
@@ -272,59 +273,6 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
                                 </div>
                               </div>
                             </div>
-                            {/* </div> */}
-                            {/* <div
-                            id="collapseThree"
-                            className="accordion-collapse collapse show"
-                            aria-labelledby="headingThree"
-                            data-bs-parent="#accordionExample3"
-                          >
-                            <div className="accordion-body">
-                              <div className="text-editor add-list add">
-                                <div className="col-lg-12">
-                                  <div className="add-choosen">
-                                    <div className="input-blocks">
-                                      <div className="image-upload">
-                                        <input type="file" />
-                                        <div className="image-uploads">
-                                          <PlusCircle className="plus-down-add me-0" />
-                                          <h4>Add Images</h4>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    {isImageVisible1 && (
-                                      <div className="phone-img">
-                                        <ImageWithBasePath
-                                          src="assets/img/products/phone-add-2.png"
-                                          alt="image"
-                                        />
-                                        <Link to="#">
-                                          <X
-                                            className="x-square-add remove-product"
-                                            // onClick={handleRemoveProduct1}
-                                          />
-                                        </Link>
-                                      </div>
-                                    )}
-                                    {isImageVisible && (
-                                      <div className="phone-img">
-                                        <ImageWithBasePath
-                                          src="assets/img/products/phone-add-1.png"
-                                          alt="image"
-                                        />
-                                        <Link to="#">
-                                          <X
-                                            className="x-square-add remove-product"
-                                            // onClick={handleRemoveProduct}
-                                          />
-                                        </Link>
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div> */}
                           </div>
                         </div>
                       </div>
@@ -376,6 +324,7 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
                             } form-control`}
                             onChange={handleInputChange}
                             placeholder="example@gmail.com"
+                            disabled={isSuperAdmin}
                             required
                           />
                           <div className="invalid-feedback">
@@ -394,6 +343,7 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
                             onChange={handleSelectChange}
                             options={roleOpt}
                             placeholder="Choose Status"
+                            isDisabled={isSuperAdmin}
                             required
                           />
                           <div className="invalid-feedback">
@@ -416,6 +366,7 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
                               name="password"
                               value={passwordinput.password}
                               onChange={handlePasswordChange}
+                              disabled={isSuperAdmin}
                               required
                             />
                             <span
@@ -446,6 +397,7 @@ const AddUsers = ({ mode, record, onSubmitSuccess }) => {
                               name="confirmPassword"
                               value={passwordinput.confirmPassword}
                               onChange={handlePasswordChange}
+                              disabled={isSuperAdmin}
                               required
                             />
                             <span

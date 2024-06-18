@@ -4,7 +4,7 @@ import {
   PageTopRight,
   TableDataSearch,
 } from "../../../core/reusable_components/table/tables";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Filter, StopCircle, User } from "react-feather";
 import ImageWithBasePath from "../../../core/img/imagewithbasebath";
 import { DatePicker, Tag } from "antd";
@@ -13,8 +13,10 @@ import Table from "../../../core/pagination/datatable";
 import { toast } from "react-toastify";
 import { apiUrl, dateFormat } from "../../../core/json/api";
 import Loader_2 from "../../loader-2/loader-2";
-import { searchingdata } from "../../../core/json/functions";
+import { getfilteredData } from "../../../core/json/functions";
 import moment from "moment";
+import { all_routes } from "../../../Router/all_routes";
+
 const Order_Status_Report = () => {
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,7 +29,6 @@ const Order_Status_Report = () => {
     startDate: "",
     endDate: "",
   });
-
   const [selectedisFilter, setSelectedisFilter] = useState({
     party: 0,
     item: 0,
@@ -36,6 +37,9 @@ const Order_Status_Report = () => {
     startDate: "",
     endDate: "",
   });
+  const location = useLocation();
+  const { state } = location;
+  const navigate = useNavigate();
 
   const statusOpt = [
     { value: 0, label: "Select All" },
@@ -110,6 +114,15 @@ const Order_Status_Report = () => {
       },
     },
   ];
+
+  useEffect(() => {
+    if (state?.permissions?.right4 === 0) {
+      setTimeout(
+        () => navigate(all_routes.accessDeniedRoute, { replace: true }),
+        500
+      );
+    }
+  }, [state, navigate]);
 
   useEffect(() => {
     getTableData(`${apiUrl}/GetOrderStatusReport`);
@@ -241,7 +254,7 @@ const Order_Status_Report = () => {
       if (!ValidationApplied(selectedisFilter)) return;
       const resp = await fetch(generated_api_url());
       const json = await resp.json();
-      console.log("json", json);
+      // console.log("json", json);
       if (json.status === 1) {
         setTableData(handle_set_data_table(json));
       } else {
@@ -265,7 +278,7 @@ const Order_Status_Report = () => {
               title={"Order Status Report"}
               subTitle={"Order Items Status Details"}
             />
-            <PageTopRight onRefresh={" "} />
+            <PageTopRight />
           </div>
           <div className="card table-list-card">
             <div className="card-body">
@@ -274,7 +287,7 @@ const Order_Status_Report = () => {
                 <div className="search-set">
                   <TableDataSearch
                     onSearch={(e) =>
-                      setTableDataSearch(searchingdata(e, tableData))
+                      setTableDataSearch(getfilteredData(e, tableData))
                     }
                   />
                 </div>

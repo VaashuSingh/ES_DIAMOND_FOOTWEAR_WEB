@@ -202,8 +202,8 @@ import Order_Order_Task_Table from "../feature-module/transaction/tasktable";
 //Report
 import Order_Status_Report from "../feature-module/Reports/transactions/orderstatusreport";
 
-//Users
-import UsersRightList from "../feature-module/usermanagement/userrightlist";
+//For No Page View Right For Users
+import AccessDenied from "../feature-module/pages/accessDenied/noaccess";
 import { all_routes } from "./all_routes";
 
 export const publicRoutes = [
@@ -1452,6 +1452,13 @@ export const publicRoutes = [
     path: routes.orderstatusreport,
     name: "orderstatusreport",
     element: <Order_Status_Report />,
+    route: Route,
+  },
+  {
+    id: 124,
+    path: routes.accessDeniedRoute,
+    name: "accessDeniedRoute",
+    element: <AccessDenied />,
     route: Route,
   },
 ];

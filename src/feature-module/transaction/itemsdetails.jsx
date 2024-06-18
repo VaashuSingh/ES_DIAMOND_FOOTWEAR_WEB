@@ -12,8 +12,6 @@ import { toast } from "react-toastify";
 import Modal_Accept from "../../core/modals/transaction/order-accept/accept-modal";
 import {
   cancelCallback,
-  // confirmationCallback,
-  getCurrentUsersDetails,
   showConfirmationAlert,
 } from "../../core/json/functions";
 import moment from "moment";

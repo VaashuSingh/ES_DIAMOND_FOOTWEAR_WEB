@@ -1,11 +1,9 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
-import { Link, Route, useNavigate } from "react-router-dom";
+import { Link, Route, useLocation, useNavigate } from "react-router-dom";
 import ImageWithBasePath from "../../core/img/imagewithbasebath";
 import { Filter, StopCircle, User } from "react-feather";
 import Select from "react-select";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
 import Table from "../../core/pagination/datatable";
 import { apiUrl } from "../../core/json/api";
 import { toast } from "react-toastify";
@@ -20,6 +18,7 @@ import {
   renderActions,
 } from "../../core/reusable_components/table/tables";
 import { all_routes } from "../../Router/all_routes";
+import { getfilteredData } from "../../core/json/functions";
 
 const OrdersReceivedList = () => {
   const [loading, setLoading] = useState(false);
@@ -37,12 +36,23 @@ const OrdersReceivedList = () => {
     endDate: "",
   });
   const navigate = useNavigate();
-  const routes = all_routes;
+  const route = all_routes;
+  const location = useLocation();
+  const { state } = location;
 
-  const toggleFilterVisibility = () => {
+  useEffect(() => {
+    if (state?.permissions?.right4 === 0) {
+      setTimeout(
+        () => navigate(route.accessDeniedRoute, { replace: true }),
+        500
+      );
+    }
+  }, [state, navigate]);
+
+  function toggleFilterVisibility() {
     setIsFilterVisible((prevVisibility) => !prevVisibility);
     handleFieldsClear();
-  };
+  }
 
   // console.log("selectedstartDate", selectedstartDate);
   const handleFieldsClear = () => {
@@ -136,27 +146,28 @@ const OrdersReceivedList = () => {
       key: "actions",
       render: (text, record) => (
         <div className="action-table-data-new">
-          <div className="edit-delete-action">
-            <a
-              className="me-2 p-2"
-              // to={routes.ordacceptitemsdetviews}
-              // state={{
-              //   code: record?.id,
-              //   headers: {
-              //     series: record.series,
-              //     vchdate: record.date,
-              //     vchno: record.vchno,
-              //     party: record.customer,
-              //   },
-              // }}
-              onClick={() => handleRowClick(record)}
-            >
-              <i
-                data-feather="eye"
-                className="feather feather-eye action-eye"
-              />
-            </a>
-            {/* <Link
+          {state.permissions.right2 !== 0 && (
+            <div className="edit-delete-action">
+              <a
+                className="me-2 p-2"
+                // to={routes.ordacceptitemsdetviews}
+                // state={{
+                //   code: record?.id,
+                //   headers: {
+                //     series: record.series,
+                //     vchdate: record.date,
+                //     vchno: record.vchno,
+                //     party: record.customer,
+                //   },
+                // }}
+                onClick={() => handleRowClick(record)}
+              >
+                <i
+                  data-feather="eye"
+                  className="feather feather-eye action-eye"
+                />
+              </a>
+              {/* <Link
               className="me-2 p-2"
               to="#"
               data-bs-toggle="modal"
@@ -168,14 +179,15 @@ const OrdersReceivedList = () => {
                 className="feather feather-shield shield"
               />
             </Link> */}
-          </div>
+            </div>
+          )}
         </div>
       ),
     },
   ];
 
   const handleRowClick = (record) => {
-    navigate(routes.ordacceptitemsdetviews, {
+    navigate(route.ordacceptitemsdetviews, {
       state: {
         code: record?.id,
         headers: {
@@ -302,14 +314,9 @@ const OrdersReceivedList = () => {
     }
   };
 
-  //Searching Input Box In Table
-  const handleSearch = (value) => {
-    const filteredData = tableData.filter((o) =>
-      Object.keys(o).some((k) =>
-        String(o[k]).toLowerCase().includes(value.toLowerCase())
-      )
-    );
-    setSearchTable(filteredData);
+  const handleApplyFilterClick = (e) => {
+    e.preventdefault();
+    applyFilter();
   };
 
   return (
@@ -330,11 +337,11 @@ const OrdersReceivedList = () => {
             <div className="card-body">
               <div className="table-top">
                 <div className="search-set">
-                  <TableDataSearch onSearch={handleSearch} />
+                  <TableDataSearch onSearch={(e) => setSearchTable(getfilteredData(e, tableData))} />
                 </div>
                 {/* /Filter Icon*/}
                 <div className="search-path">
-                  <Link
+                  <a
                     className={`btn btn-filter ${
                       isFilterVisible ? "setclose" : ""
                     }`}
@@ -351,7 +358,7 @@ const OrdersReceivedList = () => {
                         alt="img"
                       />
                     </span>
-                  </Link>
+                  </a>
                 </div>
                 {/* /Filter Icon*/}
               </div>
@@ -443,7 +450,7 @@ const OrdersReceivedList = () => {
                           <div className="input-blocks">
                             <button
                               className="btn btn-filters ms-auto"
-                              onClick={applyFilter}
+                              onClick={handleApplyFilterClick}
                             >
                               {" "}
                               <i

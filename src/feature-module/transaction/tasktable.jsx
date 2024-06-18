@@ -12,6 +12,9 @@ import {
   TableDataSearch,
 } from "../../core/reusable_components/table/tables";
 import Modal_Task_Approvel from "../../core/modals/transaction/order-accept/approvel-modal";
+import { useLocation, useNavigate } from "react-router-dom";
+import { all_routes } from "../../Router/all_routes";
+import { getfilteredData } from "../../core/json/functions";
 
 const Order_Task_Table = (props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +24,18 @@ const Order_Task_Table = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [searchTable, setSearchTable] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { state } = location;
+
+  useEffect(() => {
+    if (state?.permissions?.right4 === 0) {
+      setTimeout(
+        () => navigate(all_routes.accessDeniedRoute, { replace: true }),
+        500
+      );
+    }
+  }, [props?.identity, state, navigate]);
 
   const handleShowModal = (record) => {
     setSelectedRecord(record);
@@ -132,11 +147,13 @@ const Order_Task_Table = (props) => {
       width: 100,
       render: (_, record, index) => (
         <div id="accept_table" className="action-table-data-new">
-          <div className="edit-delete-action">
-            <a className="me-2 p-2" onClick={() => handleShowModal(record)}>
-              <i data-feather="edit" className="feather-edit" />
-            </a>
-          </div>
+          {state.permissions.right2 !== 0 && (
+            <div className="edit-delete-action">
+              <a className="me-2 p-2" onClick={() => handleShowModal(record)}>
+                <i data-feather="edit" className="feather-edit" />
+              </a>
+            </div>
+          )}
         </div>
       ),
     },
@@ -212,16 +229,6 @@ const Order_Task_Table = (props) => {
     setSearchTable(null);
   };
 
-  //Searching Input Box In Table
-  const handleSearch = (value) => {
-    const filteredData = data.filter((o) =>
-      Object.keys(o).some((k) =>
-        String(o[k]).toLowerCase().includes(value.toLowerCase())
-      )
-    );
-    setSearchTable(filteredData);
-  };
-
   return (
     <>
       {isLoading && <Loader_2 />}
@@ -230,8 +237,8 @@ const Order_Task_Table = (props) => {
           <div className="page-header">
             {/* Table top header component */}
             <PageTopHeaderLeft
-              title={headers.title}
-              subTitle={headers.subtitle}
+              title={headers?.title}
+              subTitle={headers?.subtitle}
             />
             <GoBackToPage title={" "} />
           </div>
@@ -240,7 +247,7 @@ const Order_Task_Table = (props) => {
             <div className="card-body">
               <div className="table-top">
                 <div className="search-set">
-                  <TableDataSearch onSearch={handleSearch} />
+                  <TableDataSearch onSearch={(e) => setSearchTable(getfilteredData(e, data))} />
                 </div>
               </div>
               <div className="table-responsive p-0">

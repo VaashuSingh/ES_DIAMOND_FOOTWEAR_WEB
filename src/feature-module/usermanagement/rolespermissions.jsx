@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Table from "../../core/pagination/datatable";
 import AddRole from "../../core/modals/usermanagement/addrole";
 import { apiUrl } from "../../core/json/api";
@@ -14,7 +12,11 @@ import {
   PageTopHeaderLeft,
 } from "../../core/reusable_components/table/tables";
 import { all_routes } from "../../Router/all_routes";
-import { searchingdata } from "../../core/json/functions";
+import {
+  getfilteredData,
+  showConfirmationAlert,
+  cancelCallback,
+} from "../../core/json/functions";
 
 const RolesPermissions = () => {
   const route = all_routes;
@@ -23,6 +25,18 @@ const RolesPermissions = () => {
   const [mode, setMode] = useState("add");
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [searchTable, setSearchTable] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { state } = location;
+
+  useEffect(() => {
+    if (state?.permissions?.right4 === 0) {
+      setTimeout(
+        () => navigate(all_routes.accessDeniedRoute, { replace: true }),
+        500
+      );
+    }
+  }, [state, navigate]);
 
   const columns = [
     {
@@ -43,14 +57,16 @@ const RolesPermissions = () => {
       render: (text, record) => (
         <div className="action-table-data-new">
           <div className="edit-delete-action">
-            <Link
-              className="me-2 p-2"
-              data-bs-toggle="modal"
-              data-bs-target="#add-units"
-              onClick={() => handleRowClick(record)}
-            >
-              <i data-feather="edit" className="feather-edit" />
-            </Link>
+            {state?.permissions?.right2 !== 0 && (
+              <Link
+                className="me-2 p-2"
+                data-bs-toggle="modal"
+                data-bs-target="#add-units"
+                onClick={() => handleRowClick(record)}
+              >
+                <i data-feather="edit" className="feather-edit" />
+              </Link>
+            )}
             <Link
               className="me-2 p-2"
               to={route.permissions}
@@ -61,12 +77,15 @@ const RolesPermissions = () => {
                 className="feather feather-shield shield"
               />
             </Link>
-            <Link
-              className="confirm-text p-2"
-              onClick={() => showConfirmationAlert(record)}
-            >
-              <i data-feather="trash-2" className="feather-trash-2" />
-            </Link>
+            {state.permissions.right3 !== 0 && (
+              <Link
+                className="confirm-text p-2"
+                to="#"
+                onClick={() => handleRecordDelete(record.id)}
+              >
+                <i data-feather="trash-2" className="feather-trash-2" />
+              </Link>
+            )}
           </div>
         </div>
       ),
@@ -108,67 +127,36 @@ const RolesPermissions = () => {
     setMode("add");
   };
 
-  const handleRowDelete = async (roleId) => {
-    setLoading(true);
-    try {
-      const resp = await fetch(`${apiUrl}/DeleteMasters/${1}/${1}/${roleId}`);
-      const json = await resp.json();
-      console.log("json", json);
-      if (json.status === 1) handleRefresh();
-      return json;
-    } catch (err) {
-      toast.error(String(err.message));
-      return err;
-    } finally {
-      setLoading(false);
-    }
+  const handleRecordDelete = (roleId) => {
+    const deleteRecord = async () => {
+      setLoading(true);
+      try {
+        const resp = await fetch(`${apiUrl}/DeleteMasters/${1}/${1}/${roleId}`);
+        const json = await resp.json();
+        // console.log("json", json);
+        if (json.status === 1) {
+          handleRefresh();
+          toast.success(json?.msg, { position: "top-center" });
+        } else {
+          toast.warning(json?.msg, { position: "top-center" });
+        }
+      } catch (err) {
+        toast.error(String(err.message), { position: "top-center" });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    showConfirmationAlert(
+      "do you want to delete in this role master",
+      deleteRecord,
+      cancelCallback
+    );
   };
 
   const handleRefresh = () => {
     setSelectedRecord(null);
     getTableData(`${apiUrl}/GetUserRoleMasters/${1}`);
-  };
-
-  const MySwal = withReactContent(Swal);
-
-  const showConfirmationAlert = (record) => {
-    MySwal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      showCancelButton: true,
-      confirmButtonColor: "#00ff00",
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonColor: "#ff0000",
-      cancelButtonText: "Cancel",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        const deletionSuccess = await handleRowDelete(record.id);
-        if (deletionSuccess.status == 1) {
-          MySwal.fire({
-            title: "Deleted!",
-            text: "Your User Role has been deleted.",
-            className: "btn btn-success",
-            confirmButtonText: "OK",
-            customClass: {
-              confirmButton: "btn btn-success",
-            },
-          });
-        } else {
-          MySwal.fire({
-            title: "Not Deleted!",
-            icon: "error",
-            text: deletionSuccess.msg,
-            className: "btn btn-error",
-            confirmButtonText: "OK",
-            customClass: {
-              confirmButton: "btn btn-error",
-            },
-          });
-        }
-      } else {
-        MySwal.close();
-      }
-    });
   };
 
   return (
@@ -183,18 +171,22 @@ const RolesPermissions = () => {
               subTitle={"Manage your roles"}
             />
             {/* <PageTopRight onRefresh={handleRefresh} /> */}
-            <TableHeadButton
-              title={"Add New Role"}
-              target={"add-units"}
-              handleModalOpen={handleModalOpen}
-            />
+            {state?.permissions.right1 !== 0 && (
+              <TableHeadButton
+                title={"Add New Role"}
+                target={"add-units"}
+                handleModalOpen={handleModalOpen}
+              />
+            )}
           </div>
           {/* /product list */}
           <div className="card table-list-card">
             <div className="card-body">
               <div className="table-top">
                 <TableDataSearch
-                  onSearch={(e) => setSearchTable(searchingdata(e, tabledata))}
+                  onSearch={(e) =>
+                    setSearchTable(getfilteredData(e, tabledata))
+                  }
                 />
               </div>
               {/* /Filter */}

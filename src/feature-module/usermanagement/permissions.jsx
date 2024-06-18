@@ -12,8 +12,8 @@ import { searchingHandler } from "../../core/json/functions";
 
 const Permissions = () => {
   const navigate = useNavigate();
-  const location = useLocation()
-  console.log('location',location)
+  const location = useLocation();
+  // console.log("location", location);
   const [isLoading, setIsLoading] = useState(false);
   const [permissionData, setPermissionData] = useState([]);
   const { state } = useLocation();
@@ -31,7 +31,7 @@ const Permissions = () => {
       setIsLoading(true);
       const resp = await fetch(url);
       const result = await resp.json();
-      // console.log("result", result);
+      console.log("result", result);
       setPermissionData(result?.data); // Set fetched data to state
     } catch (err) {
       toast.error(err.message);
@@ -56,6 +56,7 @@ const Permissions = () => {
         return rest;
       }),
     };
+    console.log("newData", newData);
     return newData;
   };
 
@@ -72,8 +73,12 @@ const Permissions = () => {
       });
       const result = await resp.json();
       // console.log("resp", result);
-      toast.success(result.msg, { position: "top-center" });
-      if (result.status === 1) navigate(-1);
+      if (result.status === 1) {
+        toast.success(result?.msg, { position: "top-center" });
+        navigate(-1);
+      } else {
+        toast.warning(result?.msg, { position: "top-center" });
+      }
     } catch (err) {
       toast.error(err.message);
     } finally {

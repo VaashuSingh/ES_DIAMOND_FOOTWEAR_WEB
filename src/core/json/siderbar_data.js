@@ -5,6 +5,7 @@ export const SidebarData = [
     label: "Main",
     submenuOpen: true,
     showSubRoute: false,
+    submenu: false,
     submenuHdr: "Main",
     submenuItems: [
       {

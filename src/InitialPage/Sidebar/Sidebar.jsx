@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Scrollbars from "react-custom-scrollbars-2";
 // import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-// import { SidebarData } from "../../core/json/siderbar_data";
 import HorizontalSidebar from "./horizontalSidebar";
 import CollapsedSidebar from "./collapsedSidebar";
 import { toast } from "react-toastify";
@@ -39,15 +38,14 @@ const Sidebar = () => {
     setIsLoading(true);
     const currentuser = getCurrentUsers();
     getSidebarData(`${apiUrl}/GetUserMenusResponse/${currentuser?.userId}`);
+    // console.log("sidebarData", sidebarData);
   }, []);
-
-  console.log("sidebarData", SidebarData);
 
   const getSidebarData = async (url) => {
     try {
       const resp = await fetch(url);
       const json = await resp.json();
-      console.log("json", json);
+      // console.log("json", json);
       if (json.status === 1) setSidebarData(json.data);
     } catch (err) {
       toast.error(err.message);
@@ -55,6 +53,11 @@ const Sidebar = () => {
       setIsLoading(false);
     }
   };
+
+  // const renderIcon = (iconName) => {
+  //   const IconComponent = iconMapping[iconName];
+  //   return IconComponent ? <IconComponent /> : null;
+  // };
 
   return (
     <div>
@@ -65,7 +68,7 @@ const Sidebar = () => {
             <div id="sidebar-menu" className="sidebar-menu">
               <ul>
                 {/* Main Menu */}
-                {SidebarData?.map((mainLabel, index) => (
+                {sidebarData?.map((mainLabel, index) => (
                   <li className="submenu-open" key={index}>
                     <h6 className="submenu-hdr" key={mainLabel?.label}>
                       {mainLabel?.label}
@@ -88,6 +91,7 @@ const Sidebar = () => {
                             <li className="submenu" key={i}>
                               <Link
                                 to={title?.link}
+                                state={{ permissions: title?.permissions }}
                                 onClick={() => toggleSidebar(title?.label)}
                                 className={`${
                                   subOpen == title?.label ? "subdrop" : ""
@@ -99,8 +103,13 @@ const Sidebar = () => {
                             `}
                               >
                                 {/* <Grid /> */}
-                                {/* {iconMapping[title?.icon.replace("<Icon.", "").replace(" />", "")] || null} */}
-                                {title?.icon}
+                                {iconMapping[
+                                  title?.icon
+                                    .replace("<Icon.", "")
+                                    .replace(" />", "")
+                                ] || null}
+                                {/* {renderIcon(title?.icon)} */}
+                                {/* {title?.icon} */}
                                 <span>{title?.label}</span>
                                 <span
                                   className={title?.submenu ? "menu-arrow" : ""}
@@ -121,6 +130,9 @@ const Sidebar = () => {
                                       {/* {item.lebel} */}
                                       <Link
                                         to={item?.link}
+                                        state={{
+                                          permissions: item?.permissions,
+                                        }}
                                         className={
                                           item?.submenuItems
                                             ?.map((link) => link?.link)
@@ -154,6 +166,10 @@ const Sidebar = () => {
                                               {/* {item.lebel} */}
                                               <Link
                                                 to={items?.link}
+                                                state={{
+                                                  permissions:
+                                                    items?.permissions,
+                                                }}
                                                 className={`${
                                                   subsidebar == items?.label
                                                     ? "submenu-two subdrop"

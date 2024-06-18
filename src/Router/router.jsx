@@ -11,6 +11,8 @@ import Loader from "../feature-module/loader/loader";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PrivateRoute } from "./privateRoute";
+import TaxReport from "../feature-module/Reports/taxreport";
+
 // import HorizontalSidebar from "../InitialPage/Sidebar/horizontalSidebar";
 //import LoadingSpinner from "../InitialPage/Sidebar/LoadingSpinner";
 
@@ -18,7 +20,6 @@ const AllRoutes = () => {
   const isHeaderCollapsed = useSelector((state) => state.toggle_header);
 
   // const layoutStyles = useSelector((state) => state.layoutstyledata);
-  // console.log("data111", data);
 
   const HeaderLayout = () => (
     <div
@@ -28,14 +29,14 @@ const AllRoutes = () => {
       <Sidebar />
       <Outlet />
       {/* <ThemeSettings /> */}
-      <Loader />
+      {/* <Loader /> */}
     </div>
   );
 
   const Authpages = () => (
     <div className={isHeaderCollapsed ? "header-collapse" : ""}>
       <Outlet />
-      <Loader />
+      {/* <Loader /> */}
       {/* <ThemeSettings /> */}
     </div>
   );
@@ -44,7 +45,7 @@ const AllRoutes = () => {
     <div>
       <Header />
       <Outlet />
-      <Loader />
+      {/* <Loader /> */}
       <ThemeSettings />
     </div>
   );
@@ -57,7 +58,6 @@ const AllRoutes = () => {
             <Route path={route.path} element={route.element} key={id} />
           ))}
         </Route>
-
         <Route
           path="/"
           element={
@@ -71,12 +71,12 @@ const AllRoutes = () => {
             <Route path={route.path} element={route.element} key={id} />
           ))}
         </Route>
-
         <Route path="/" element={<Authpages />}>
           {pagesRoute.map((route, id) => (
             <Route path={route.path} element={route.element} key={id} />
           ))}
         </Route>
+        <Route path="*" element={<TaxReport />} /> {/* Wildcard route */}
       </Routes>
       <ToastContainer />
     </div>

@@ -3,6 +3,9 @@ export const all_routes = {
   ordacceptlist: "/order-accept-list",
   ordaccept: "/order-accept",
 
+  //Rights For Pages
+  accessDeniedRoute: "/no-pages-views-rights",
+
   //Transactions
   ordacceptitemsdetviews: "/order-accept-items-details",
   ordacceptmrptable: "/order-accept-mrp",
