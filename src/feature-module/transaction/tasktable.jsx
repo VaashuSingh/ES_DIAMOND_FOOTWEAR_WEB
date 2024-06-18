@@ -147,7 +147,7 @@ const Order_Task_Table = (props) => {
       width: 100,
       render: (_, record, index) => (
         <div id="accept_table" className="action-table-data-new">
-          {state.permissions.right2 !== 0 && (
+          {state?.permissions?.right2 !== 0 && (
             <div className="edit-delete-action">
               <a className="me-2 p-2" onClick={() => handleShowModal(record)}>
                 <i data-feather="edit" className="feather-edit" />
@@ -247,7 +247,9 @@ const Order_Task_Table = (props) => {
             <div className="card-body">
               <div className="table-top">
                 <div className="search-set">
-                  <TableDataSearch onSearch={(e) => setSearchTable(getfilteredData(e, data))} />
+                  <TableDataSearch
+                    onSearch={(e) => setSearchTable(getfilteredData(e, data))}
+                  />
                 </div>
               </div>
               <div className="table-responsive p-0">

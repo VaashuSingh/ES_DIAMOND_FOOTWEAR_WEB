@@ -9,6 +9,7 @@ import logo2 from "./../../core/assets/img/logo2.png";
 import logo3 from "./../../core/assets/img/logo3.png";
 import logo4 from "./../../core/assets/img/logo4.png";
 import { getCurrentUsers, logout } from "../../core/json/functions";
+import No_Images from "../../core/assets/img/no-img.png";
 
 const Header = () => {
   const route = all_routes;
@@ -611,7 +612,7 @@ const Header = () => {
               <span className="user-info">
                 <span className="user-letter">
                   <img
-                    src={userdata?.images}
+                    src={userdata?.images || No_Images}
                     alt="user-image"
                     title={`${userdata?.name}`}
                     className="img-fluid"
@@ -619,7 +620,7 @@ const Header = () => {
                 </span>
                 <span className="user-detail">
                   <span className="user-name">{userdata?.name}</span>
-                  <span className="user-role">Super Admin</span>
+                  <span className="user-role">{userdata?.role}</span>
                 </span>
               </span>
             </a>
@@ -678,9 +679,9 @@ const Header = () => {
             <Link className="dropdown-item" to="profile">
               My Profile
             </Link>
-            <Link className="dropdown-item" to="generalsettings">
+            {/* <Link className="dropdown-item" to="generalsettings">
               Settings
-            </Link>
+            </Link> */}
             <Link className="dropdown-item" to="signin">
               Logout
             </Link>
