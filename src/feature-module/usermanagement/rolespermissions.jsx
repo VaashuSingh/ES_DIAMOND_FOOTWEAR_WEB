@@ -77,7 +77,7 @@ const RolesPermissions = () => {
                 className="feather feather-shield shield"
               />
             </Link>
-            {state.permissions.right3 !== 0 && (
+            {state?.permissions?.right3 !== 0 && (
               <Link
                 className="confirm-text p-2"
                 to="#"
