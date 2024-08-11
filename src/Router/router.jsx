@@ -28,7 +28,7 @@ const AllRoutes = () => {
       <Header />
       <Sidebar />
       <Outlet />
-      {/* <ThemeSettings /> */}
+      <ThemeSettings />
       {/* <Loader /> */}
     </div>
   );
@@ -37,7 +37,7 @@ const AllRoutes = () => {
     <div className={isHeaderCollapsed ? "header-collapse" : ""}>
       <Outlet />
       {/* <Loader /> */}
-      {/* <ThemeSettings /> */}
+      <ThemeSettings />
     </div>
   );
 
